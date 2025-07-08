@@ -2,8 +2,8 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import { Scalar } from "@scalar/hono-api-reference";
 import { description, title } from "../package.json";
 import { env } from "./env";
-import { usersController } from "./users/users.controller";
 import { userController } from "./users/user.controller";
+import { usersController } from "./users/users.controller";
 
 const urls = {
 	json: "/docs/json",

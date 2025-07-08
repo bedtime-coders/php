@@ -1,16 +1,30 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { HTTPException } from "hono/http-exception";
+import type { JwtVariables } from "hono/jwt";
+import { jwt } from "hono/jwt";
+import { env } from "@/env";
 import { StatusCodes } from "@/shared/constants";
 import { getCurrentUserRoute, updateUserRoute } from "./users.routes";
 import * as usersService from "./users.service";
 
-const app = new OpenAPIHono();
+type Variables = JwtVariables;
+const app = new OpenAPIHono<{ Variables: Variables }>();
+
+app.use(
+	"*",
+	jwt({
+		secret: env.JWT_SECRET,
+	}),
+);
 
 /**
  * Get current user
  */
-app.openapi(getCurrentUserRoute, async ({ req, json }) => {
-	const userId = req.header("x-user-id");
+app.openapi(getCurrentUserRoute, async ({ req, json, get }) => {
+	const payload = get("jwtPayload");
+	// const userId = req.header("x-user-id");
+	const userId = payload.uid;
+	console.log(payload);
 	if (!userId) {
 		throw new HTTPException(StatusCodes.UNAUTHORIZED, {
 			message: "Unauthorized",
