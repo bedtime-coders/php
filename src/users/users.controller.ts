@@ -1,16 +1,26 @@
-import { OpenAPIHono } from "@hono/zod-openapi";
-import { loginRoute } from "./users.routes";
+import { createApp } from "@/core/utils";
+import { toResponse } from "./mappers";
+import * as routes from "./users.routes";
+import * as service from "./users.service";
 
-const app = new OpenAPIHono();
+const app = createApp();
 
-app.openapi(loginRoute, async ({ req, json }) => {
-	const { email, password } = req.valid("json").user;
-	const token = "123";
-	const username = "jake";
-	const bio = "I work at statefarm";
-	const image = "https://i.pravatar.cc/150?img=1";
-	console.log("Your password is:", password);
-	return json({ user: { email, token, username, bio, image } });
+/**
+ * Authentication
+ */
+app.openapi(routes.login, async ({ req, json }) => {
+	const { user } = req.valid("json");
+	const result = await service.login({ user });
+	return json(toResponse(result.user, result.token));
+});
+
+/**
+ * Registration
+ */
+app.openapi(routes.register, async ({ req, json }) => {
+	const { user } = req.valid("json");
+	const result = await service.create({ user });
+	return json(toResponse(result.user, result.token));
 });
 
 export const usersController = app;

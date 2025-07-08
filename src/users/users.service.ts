@@ -1,8 +1,38 @@
 import type { User } from "@prisma/client";
+import * as argon2 from "argon2";
+import * as bcrypt from "bcrypt";
+import * as jose from "jose";
 import { db } from "@/core/db";
+import { env } from "@/core/env";
 import { assertNoConflicts } from "@/shared/errors";
+import type { JwtPayload } from "@/shared/types";
+import { name } from "../../package.json";
 import type { CreateUser, LoginUser, UpdateUser } from "./users.schema";
-import { hashPassword, signToken, verifyPassword } from "./utils";
+
+const hashPassword = async (password: string) => {
+	const isDevelopment = process.env.NODE_ENV === "development";
+	return isDevelopment
+		? await bcrypt.hash(password, 10)
+		: await argon2.hash(password);
+};
+
+const verifyPassword = async (password: string, hash: string) => {
+	const isDevelopment = process.env.NODE_ENV === "development";
+	return isDevelopment
+		? await bcrypt.compare(password, hash)
+		: await argon2.verify(hash, password);
+};
+
+const signToken = async (payload: JwtPayload) => {
+	const secret = new TextEncoder().encode(env.JWT_SECRET);
+
+	return await new jose.SignJWT(payload)
+		.setProtectedHeader({ alg: "HS256" })
+		.setExpirationTime("24h")
+		.setAudience(name)
+		.setIssuedAt()
+		.sign(secret);
+};
 
 export const login = async ({
 	user: { email, password },
