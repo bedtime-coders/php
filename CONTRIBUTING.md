@@ -17,9 +17,8 @@ Thank you for your interest in contributing!
    ```bash
    cp .env.example .env
    ```
-4. Run `pnpm db:push` to [push the database schema to the database](https://orm.drizzle.team/docs/drizzle-kit-push)
-5. (Optional) Run `pnpm db:seed` to seed the database
-6. Run `pnpm dev` to start the development server
+4. Run `pnpm db:push` to [push the database schema to the database](https://www.prisma.io/docs/orm/prisma-migrate/workflows/prototyping-your-schema)
+5. Run `pnpm dev` to start the development server
 
 ### Linting and Formatting
 
