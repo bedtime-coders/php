@@ -1,5 +1,5 @@
 import { createApp } from "@/core/utils";
-import { toResponse } from "./users.mappers";
+import { toResponse } from "./mappers";
 import { loginRoute, registerRoute } from "./users.routes";
 import * as usersService from "./users.service";
 
