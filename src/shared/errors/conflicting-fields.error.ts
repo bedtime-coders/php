@@ -1,6 +1,6 @@
 import { objectify } from "radashi";
 import { StatusCodes } from "@/shared/constants";
-import { RealWorldError } from "./realworld";
+import { RealWorldError } from "./realworld.error";
 
 export class ConflictingFieldsError extends RealWorldError {
 	constructor(

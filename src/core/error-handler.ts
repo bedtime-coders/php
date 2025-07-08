@@ -1,8 +1,21 @@
 import type { Context } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
-import { NORMAL_ERROR_CODES, StatusCodes } from "../constants";
-import { parseWwwAuthenticate } from "./utils";
+import { NORMAL_ERROR_CODES, StatusCodes } from "@/shared/constants";
+import { ApiError } from "@/shared/errors";
+
+function parseWwwAuthenticate(header: string) {
+	const errorMatch = header.match(/error="([^"]+)"/);
+	const descMatch = header.match(/error_description="([^"]+)"/);
+	return {
+		error: errorMatch ? errorMatch[1] : "unknown",
+		description: descMatch ? descMatch[1] : "An error occurred",
+	};
+}
+
+function isApiError(err: unknown): err is ApiError {
+	return err instanceof ApiError;
+}
 
 export const errorHandler = async (err: Error, c: Context) => {
 	let logInfo: unknown = err;
@@ -15,8 +28,17 @@ export const errorHandler = async (err: Error, c: Context) => {
 		},
 		status as ContentfulStatusCode,
 	);
-
-	if (err instanceof HTTPException) {
+	console.error(
+		"DEBUG error type:",
+		err,
+		"constructor:",
+		err?.constructor?.name,
+	);
+	if (isApiError(err)) {
+		status = err.status;
+		logInfo = err;
+		response = c.json({ errors: err.errors }, status as ContentfulStatusCode);
+	} else if (err instanceof HTTPException) {
 		const res = err.getResponse();
 		status = res.status;
 		const resClone = res.clone();

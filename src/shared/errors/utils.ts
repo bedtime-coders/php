@@ -1,4 +1,4 @@
-import { ConflictingFieldsError } from "./conflicting-fields";
+import { ConflictingFieldsError } from "./conflicting-fields.error";
 
 type Fields<T extends string> = Partial<Record<T, string>>;
 
@@ -37,13 +37,4 @@ export async function assertNoConflicts<T extends string>(
 	if (conflictingFields.length > 0) {
 		throw new ConflictingFieldsError(entity, conflictingFields);
 	}
-}
-
-export function parseWwwAuthenticate(header: string) {
-	const errorMatch = header.match(/error="([^"]+)"/);
-	const descMatch = header.match(/error_description="([^"]+)"/);
-	return {
-		error: errorMatch ? errorMatch[1] : "unknown",
-		description: descMatch ? descMatch[1] : "An error occurred",
-	};
 }

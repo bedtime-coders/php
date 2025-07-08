@@ -1,6 +1,6 @@
-import { errorHandler } from "@/shared/errors";
-import { userController } from "../users/user.controller";
-import { usersController } from "../users/users.controller";
+import { userController } from "@/users/user.controller";
+import { usersController } from "@/users/users.controller";
+import { errorHandler } from "./error-handler";
 import { registerOpenapi } from "./openapi";
 import { createApp } from "./utils";
 
