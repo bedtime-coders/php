@@ -35,12 +35,18 @@ importers:
       bcrypt:
         specifier: ^6.0.0
         version: 6.0.0
+      camelcase:
+        specifier: ^8.0.0
+        version: 8.0.0
       hono:
         specifier: ^4.8.4
         version: 4.8.4
       jose:
         specifier: ^6.0.11
         version: 6.0.11
+      radashi:
+        specifier: ^12.6.0
+        version: 12.6.0
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -863,6 +869,10 @@ packages:
   camel-case@4.1.2:
     resolution: {integrity: sha512-gxGWBrTT1JuMx6R+o5PTXMmUnhnVzLQ9SNutD4YqKtI6ap897t3tKECYla6gCWEkplXnlNybEkZg9GEGxKFCgw==}
 
+  camelcase@8.0.0:
+    resolution: {integrity: sha512-8WB3Jcas3swSvjIeA2yvCJ+Miyz5l1ZmB6HFb9R1317dt9LCQoswg/BGrmAmkWVEszSrrg4RwmO46qIm2OEnSA==}
+    engines: {node: '>=16'}
+
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
 
@@ -1549,6 +1559,10 @@ packages:
 
   pump@3.0.3:
     resolution: {integrity: sha512-todwxLMY7/heScKmntwQG8CXVkWUOdYxIvY2s0VWAAMh/nd8SoYiRaKjlr7+iCs984f2P8zvrfWcDDYVb73NfA==}
+
+  radashi@12.6.0:
+    resolution: {integrity: sha512-nJcpgS3La+yRlxm4bLjCcjsi1G5VeOycSo8nt5BzSEDWqSY0XNAUAwckvCa8uMHXtZqCK8fntJPXPlLve+vKhA==}
+    engines: {node: '>=16.0.0'}
 
   radix-vue@1.9.17:
     resolution: {integrity: sha512-mVCu7I2vXt1L2IUYHTt0sZMz7s1K2ZtqKeTIxG3yC5mMFfLBG4FtE1FDeRMpDd+Hhg/ybi9+iXmAP1ISREndoQ==}
@@ -2760,6 +2774,8 @@ snapshots:
       pascal-case: 3.1.2
       tslib: 2.8.1
 
+  camelcase@8.0.0: {}
+
   ccount@2.0.1: {}
 
   chai@5.2.0:
@@ -3654,6 +3670,8 @@ snapshots:
     dependencies:
       end-of-stream: 1.4.5
       once: 1.4.0
+
+  radashi@12.6.0: {}
 
   radix-vue@1.9.17(vue@3.5.17(typescript@5.8.3)):
     dependencies:

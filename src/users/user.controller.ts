@@ -1,7 +1,7 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@/shared/constants";
-import { getCurrentUserRoute, updateUserRoute } from "./user.routes";
+import { getCurrentUserRoute, updateUserRoute } from "./users.routes";
 import * as usersService from "./users.service";
 
 const app = new OpenAPIHono();

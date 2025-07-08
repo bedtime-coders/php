@@ -1,6 +1,6 @@
 import { createRoute } from "@hono/zod-openapi";
 import { StatusCodes } from "@/shared/constants";
-import { CreateUser, LoginUser, User } from "./users.schema";
+import { CreateUser, LoginUser, UpdateUser, User } from "./users.schema";
 
 export const loginRoute = createRoute({
 	method: "post",
@@ -46,6 +46,45 @@ export const registerRoute = createRoute({
 				},
 			},
 			description: "Registration successful",
+		},
+	},
+});
+
+export const getCurrentUserRoute = createRoute({
+	method: "get",
+	path: "/user",
+	responses: {
+		[StatusCodes.OK]: {
+			content: {
+				"application/json": {
+					schema: User,
+				},
+			},
+			description: "Get current user",
+		},
+	},
+});
+
+export const updateUserRoute = createRoute({
+	method: "put",
+	path: "/user",
+	request: {
+		body: {
+			content: {
+				"application/json": {
+					schema: UpdateUser,
+				},
+			},
+		},
+	},
+	responses: {
+		[StatusCodes.OK]: {
+			content: {
+				"application/json": {
+					schema: User,
+				},
+			},
+			description: "Update user",
 		},
 	},
 });
