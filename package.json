@@ -1,7 +1,7 @@
 {
-	"name": "project-name",
-	"title": "Project Title",
-	"description": "A Bedstack application",
+	"name": "phpstack",
+	"title": "PHPStack",
+	"description": "Prisma + Hono + pnpm. Absolutely no relation to the other PHP.",
 	"type": "module",
 	"scripts": {
 		"test": "bun test",

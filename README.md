@@ -1,20 +1,15 @@
 <div align="center">
-  <h1>
-      Project Title
-  </h1>
-  <a href="https://bun.sh/"><img src="https://img.shields.io/badge/Bun-14151a?logo=bun&logoColor=fbf0df" alt="bun" /></a>
-  <a href="https://elysiajs.com/"><img src="https://custom-icon-badges.demolab.com/badge/ElysiaJS-0f172b.svg?logo=elysia" alt="elysia" /></a>
-  <a href="https://drizzle.team/"><img src="https://img.shields.io/badge/Drizzle-C5F74F?logo=drizzle&logoColor=000" alt="drizzle" /></a>
-  <a href="https://biomejs.dev/"><img src="https://img.shields.io/badge/Biome-24272f?logo=biome&logoColor=f6f6f9" alt="biome" /></a>
-  <a href="https://scalar.com/"><img src="https://img.shields.io/badge/Scalar-080808?logo=scalar&logoColor=e7e7e7" alt="scalar" /></a>
-  <!-- Badges instructions: -->     
-  <!-- 1. uncomment the commented <a /> tag below -->
-  <!-- 2. remove the duplicated LICENSE badge, only keeping yours -->
-  <!-- 3. delete these instructions -->
-  <a href="https://github.com/bedtime-coders/bedstack-start/blob/main/LICENSE"><img src="https://custom-icon-badges.demolab.com/github/license/bedtime-coders/bedstack-stripped?label=License&color=blue&logo=law&labelColor=0d1117" alt="license" /></a>
-  <!--     <a href="https://github.com/repo-author/repo-name/blob/main/LICENSE"><img src="https://custom-icon-badges.demolab.com/github/license/repo-author/repo-name?label=License&color=blue&logo=law" alt="license" /></a> -->
-  <br/><img src="./public/logo-mini.png" alt="bun" width="200"/>
-  <p>A <a href="https://github.com/bedtime-coders/bedstack">Bedstack</a> application</p>
+<h1>
+   PHPStack
+</h1>
+
+[![License](https://custom-icon-badges.demolab.com/github/license/bedtime-coders/phpstack?label=License&color=blue&logo=law&labelColor=0d1117&)](https://github.com/bedtime-coders/phpstack/blob/main/LICENSE)
+[![Prisma](https://img.shields.io/badge/Prisma-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![Hono](https://custom-icon-badges.demolab.com/badge/Hono-1e1e20.svg?logo=honojs)](https://hono.dev/)
+[![pnpm](https://custom-icon-badges.demolab.com/badge/pnpm-242526.svg?logo=pnpm)](https://pnpm.io/)
+[![Biome](https://img.shields.io/badge/Biome-24272f?logo=biome&logoColor=f6f6f9)](https://biomejs.dev/)
+[![Star](https://custom-icon-badges.demolab.com/github/stars/bedtime-coders/phpstack?logo=star&logoColor=373737&label=Star)](https://github.com/bedtime-coders/phpstack/stargazers/)
+
 </div>
 
 ## Getting Started
