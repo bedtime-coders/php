@@ -9,22 +9,18 @@ const app = createApp();
  * Login
  */
 app.openapi(loginRoute, async ({ req, json }) => {
-	const { email, password } = req.valid("json").user;
-	const { user, token } = await usersService.login({
-		user: { email, password },
-	});
-	return json(toResponse(user, token));
+	const { user } = req.valid("json");
+	const result = await usersService.login({ user });
+	return json(toResponse(result.user, result.token));
 });
 
 /**
  * Register
  */
 app.openapi(registerRoute, async ({ req, json }) => {
-	const { email, password, username, bio, image } = req.valid("json").user;
-	const { user, token } = await usersService.create({
-		user: { email, password, username, bio, image },
-	});
-	return json(toResponse(user, token));
+	const { user } = req.valid("json");
+	const result = await usersService.create({ user });
+	return json(toResponse(result.user, result.token));
 });
 
 export const usersController = app;

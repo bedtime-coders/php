@@ -10,8 +10,8 @@ const app = createApp({ auth: true });
  */
 app.openapi(getCurrentUserRoute, async ({ json, get }) => {
 	const { uid: currentUserId } = get("jwtPayload");
-	const { user, token } = await usersService.findOne(currentUserId);
-	return json(toResponse(user, token));
+	const result = await usersService.findOne(currentUserId);
+	return json(toResponse(result.user, result.token));
 });
 
 /**
@@ -19,9 +19,9 @@ app.openapi(getCurrentUserRoute, async ({ json, get }) => {
  */
 app.openapi(updateUserRoute, async ({ req, json, get }) => {
 	const { uid: currentUserId } = get("jwtPayload");
-	const update = req.valid("json");
-	const { user, token } = await usersService.update(currentUserId, update);
-	return json(toResponse(user, token));
+	const { user } = req.valid("json");
+	const result = await usersService.update(currentUserId, { user });
+	return json(toResponse(result.user, result.token));
 });
 
 export const userController = app;
