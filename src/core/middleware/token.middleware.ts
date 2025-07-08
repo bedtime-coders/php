@@ -154,7 +154,6 @@ export const token = <T = unknown>(options: {
 			});
 		}
 
-		// --- Zod validation here ---
 		if (options.schema) {
 			const result = options.schema.safeParse(payload);
 			if (!result.success) {

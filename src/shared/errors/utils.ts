@@ -38,3 +38,12 @@ export async function assertNoConflicts<T extends string>(
 		throw new ConflictingFieldsError(entity, conflictingFields);
 	}
 }
+
+export function parseWwwAuthenticate(header: string) {
+	const errorMatch = header.match(/error="([^"]+)"/);
+	const descMatch = header.match(/error_description="([^"]+)"/);
+	return {
+		error: errorMatch ? errorMatch[1] : "unknown",
+		description: descMatch ? descMatch[1] : "An error occurred",
+	};
+}
