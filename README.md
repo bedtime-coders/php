@@ -1,9 +1,9 @@
 <div align="center">
 <h1>
-   PHPStack
+   PHp*
 </h1>
 
-[Prisma](https://www.prisma.io/) + [Hono](https://hono.dev/) + [pnpm](https://pnpm.io/) <sup>Absolutely no relation to the other PHP</sup>
+[Prisma](https://www.prisma.io/) + [Hono](https://hono.dev/) + [pnpm](https://pnpm.io/) 
 
 [![License](https://custom-icon-badges.demolab.com/github/license/bedtime-coders/phpstack?label=License&color=blue&logo=law&labelColor=0d1117&)](https://github.com/bedtime-coders/phpstack/blob/main/LICENSE)
 [![Prisma](https://img.shields.io/badge/Prisma-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
@@ -14,22 +14,22 @@
 
 </div>
 
-## Bedstack: Bun + ElysiaJS + Drizzle Stack
+## PHp*: Prisma + Hono + pnpm
 
-**Bedstack** is a collection of bleeding-edge technologies to build modern web applications.
+**PHp*** is a collection of bleeding-edge technologies to build modern web applications.
 
 Including:
 
-- **B**: [Bun](https://bun.sh) - Runtime + package manager, [Biome](https://biomejs.dev) - Code quality
-- **E**: [ElysiaJS](https://elysiajs.com) - HTTP Framework
-- **D**: [Drizzle](https://orm.drizzle.team) - ORM
+- **P**: [Prisma](https://www.prisma.io) - ORM
+- **H**: [Hono](https://hono.dev) - HTTP Framework
+- **p**: [pnpm](https://pnpm.io) - Package manager
 
 ## Development
 
 1. Install dependencies
 
    ```bash
-   bun install
+   pnpm install
    ```
 
 2. Copy `.env.example` to `.env` and fill in the values
@@ -41,43 +41,44 @@ Including:
 3. Push the database schema to the database
 
    ```bash
-   bun db:push
+   pnpm db:push
    ```
 
 4. Start the server
 
    ```bash
-   bun dev
+   pnpm dev
    ```
 
-5. (Optional) Start the [database studio](https://orm.drizzle.team/drizzle-studio/overview)
+5. (Optional) Start the [database studio](https://www.prisma.io/studio)
    ```bash
-   bun db:studio
+   pnpm db:studio
    ```
 
 ## Testing
 
 ```bash
-bun run test # Not `bun test`!
+pnpm test
 ```
 
 ## Building for production
 
-> [!TIP]
-> See more info in ElysiaJS's [building for production](https://elysiajs.com/tutorial.html#build-for-production) guide.
-
 1. Build the app
 
    ```bash
-   bun run build # not `bun build`!
+   pnpm build
    ```
 
 2. Run the production server (preview)
 
    ```bash
-   bun preview
+   pnpm preview
    ```
 
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for more information, including how to set up your development environment.
+
+---
+
+<sup>*no relation to the [PHP](https://www.php.net), the scripting language</sup>
