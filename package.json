@@ -2,6 +2,10 @@
 	"name": "php",
 	"title": "PHp*",
 	"description": "Prisma + Hono + pnpm. Absolutely no relation to the other PHP.",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/bedtime-coders/php"
+	},
 	"type": "module",
 	"scripts": {
 		"dev": "dotenvx run -- tsx watch src/index.ts",
