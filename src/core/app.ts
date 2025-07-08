@@ -1,3 +1,4 @@
+import { serveStatic } from "@hono/node-server/serve-static";
 import { Scalar } from "@scalar/hono-api-reference";
 import { description, title } from "../../package.json";
 import { userController } from "../users/user.controller";
@@ -27,11 +28,14 @@ app.doc(urls.json, {
 	],
 });
 
+app.use("/favicon.ico", serveStatic({ path: "./static/favicon.ico" }));
+
 app.get(
 	urls.scalar,
 	Scalar({
 		url: urls.json,
 		pageTitle: title,
+		favicon: "/favicon.ico",
 	}),
 );
 

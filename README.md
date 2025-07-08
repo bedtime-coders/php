@@ -1,4 +1,5 @@
 <div align="center">
+   <img src="./static/android-chrome-192x192.png" alt="PHp*" width="192" height="192">
 <h1>
    PHp*
 </h1>
