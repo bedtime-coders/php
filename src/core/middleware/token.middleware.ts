@@ -12,6 +12,7 @@ import { Jwt } from "hono/utils/jwt";
 import type { SignatureAlgorithm } from "hono/utils/jwt/jwa";
 import type { SignatureKey } from "hono/utils/jwt/jws";
 import type { ZodSchema, z } from "zod";
+import { StatusCodes } from "@/shared/constants";
 
 export type TokenVariables<Schema extends z.ZodTypeAny = z.ZodTypeAny> = {
 	jwtPayload: z.infer<Schema>;
@@ -78,7 +79,7 @@ export const token = <T = unknown>(options: {
 			const parts = credentials.split(/\s+/);
 			if (parts.length !== 2) {
 				const errDescription = "invalid credentials structure";
-				throw new HTTPException(401, {
+				throw new HTTPException(StatusCodes.UNAUTHORIZED, {
 					message: errDescription,
 					res: unauthorizedResponse({
 						ctx,
@@ -123,7 +124,7 @@ export const token = <T = unknown>(options: {
 
 		if (!token) {
 			const errDescription = "no authorization included in request";
-			throw new HTTPException(401, {
+			throw new HTTPException(StatusCodes.UNAUTHORIZED, {
 				message: errDescription,
 				res: unauthorizedResponse({
 					ctx,
@@ -141,7 +142,7 @@ export const token = <T = unknown>(options: {
 			cause = e;
 		}
 		if (!payload) {
-			throw new HTTPException(401, {
+			throw new HTTPException(StatusCodes.UNAUTHORIZED, {
 				message: "Unauthorized",
 				res: unauthorizedResponse({
 					ctx,
@@ -157,7 +158,7 @@ export const token = <T = unknown>(options: {
 		if (options.schema) {
 			const result = options.schema.safeParse(payload);
 			if (!result.success) {
-				throw new HTTPException(401, {
+				throw new HTTPException(StatusCodes.UNAUTHORIZED, {
 					message: "Invalid JWT payload",
 					res: unauthorizedResponse({
 						ctx,
@@ -182,7 +183,7 @@ function unauthorizedResponse(opts: {
 	statusText?: string;
 }) {
 	return new Response("Unauthorized", {
-		status: 401,
+		status: StatusCodes.UNAUTHORIZED,
 		statusText: opts.statusText,
 		headers: {
 			"WWW-Authenticate": `Bearer realm="${opts.ctx.req.url}",error="${opts.error}",error_description="${opts.errDescription}"`,
