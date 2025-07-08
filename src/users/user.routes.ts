@@ -1,11 +1,12 @@
 import { createRoute } from "@hono/zod-openapi";
+import * as StatusCodes from "@/shared/constants/http-status-codes";
 import { UpdateUser, User } from "./users.schema";
 
 export const getCurrentUserRoute = createRoute({
 	method: "get",
 	path: "/user",
 	responses: {
-		200: {
+		[StatusCodes.OK]: {
 			content: {
 				"application/json": {
 					schema: User,
@@ -29,7 +30,7 @@ export const updateUserRoute = createRoute({
 		},
 	},
 	responses: {
-		200: {
+		[StatusCodes.OK]: {
 			content: {
 				"application/json": {
 					schema: User,

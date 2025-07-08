@@ -1,4 +1,5 @@
 import { createRoute } from "@hono/zod-openapi";
+import { StatusCodes } from "@/shared/constants";
 import { CreateUser, LoginUser, User } from "./users.schema";
 
 export const loginRoute = createRoute({
@@ -14,7 +15,7 @@ export const loginRoute = createRoute({
 		},
 	},
 	responses: {
-		200: {
+		[StatusCodes.OK]: {
 			content: {
 				"application/json": {
 					schema: User,
@@ -38,7 +39,7 @@ export const registerRoute = createRoute({
 		},
 	},
 	responses: {
-		200: {
+		[StatusCodes.OK]: {
 			content: {
 				"application/json": {
 					schema: User,
