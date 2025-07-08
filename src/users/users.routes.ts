@@ -65,6 +65,9 @@ export const getCurrentUserRoute = createRoute({
 			},
 			description: "Get current user",
 		},
+		[StatusCodes.UNAUTHORIZED]: {
+			description: "Unauthorized",
+		},
 	},
 	security: [{ Token: [] }],
 });
@@ -90,6 +93,9 @@ export const updateUserRoute = createRoute({
 				},
 			},
 			description: "Update user",
+		},
+		[StatusCodes.UNAUTHORIZED]: {
+			description: "Unauthorized",
 		},
 	},
 	security: [{ Token: [] }],
