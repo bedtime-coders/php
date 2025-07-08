@@ -2,7 +2,7 @@ import { createRoute } from "@hono/zod-openapi";
 import { StatusCodes } from "@/shared/constants";
 import { CreateUser, LoginUser, UpdateUser, User } from "./users.schema";
 
-export const loginRoute = createRoute({
+export const login = createRoute({
 	method: "post",
 	path: "/login",
 	summary: "Authentication",
@@ -30,7 +30,7 @@ export const loginRoute = createRoute({
 	},
 });
 
-export const registerRoute = createRoute({
+export const register = createRoute({
 	method: "post",
 	path: "/",
 	summary: "Registration",
@@ -58,7 +58,7 @@ export const registerRoute = createRoute({
 	},
 });
 
-export const getCurrentUserRoute = createRoute({
+export const getCurrentUser = createRoute({
 	method: "get",
 	path: "/",
 	summary: "Get Current User",
@@ -78,7 +78,7 @@ export const getCurrentUserRoute = createRoute({
 	security: [{ Token: [] }],
 });
 
-export const updateUserRoute = createRoute({
+export const updateUser = createRoute({
 	method: "put",
 	path: "/",
 	summary: "Update User",

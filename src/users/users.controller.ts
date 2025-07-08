@@ -1,25 +1,25 @@
 import { createApp } from "@/core/utils";
 import { toResponse } from "./mappers";
-import { loginRoute, registerRoute } from "./users.routes";
-import * as usersService from "./users.service";
+import * as routes from "./users.routes";
+import * as service from "./users.service";
 
 const app = createApp();
 
 /**
  * Authentication
  */
-app.openapi(loginRoute, async ({ req, json }) => {
+app.openapi(routes.login, async ({ req, json }) => {
 	const { user } = req.valid("json");
-	const result = await usersService.login({ user });
+	const result = await service.login({ user });
 	return json(toResponse(result.user, result.token));
 });
 
 /**
  * Registration
  */
-app.openapi(registerRoute, async ({ req, json }) => {
+app.openapi(routes.register, async ({ req, json }) => {
 	const { user } = req.valid("json");
-	const result = await usersService.create({ user });
+	const result = await service.create({ user });
 	return json(toResponse(result.user, result.token));
 });
 
