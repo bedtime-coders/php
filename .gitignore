@@ -49,3 +49,5 @@ package-lock.json
 *.db
 
 /generated/prisma
+
+.env.keys

@@ -4,7 +4,7 @@
 	"description": "Prisma + Hono + pnpm. Absolutely no relation to the other PHP.",
 	"type": "module",
 	"scripts": {
-		"dev": "tsx watch src/index.ts",
+		"dev": "dotenvx run -- tsx watch src/index.ts",
 		"build": "tsc",
 		"preview": "node dist/index.js",
 		"fix": "biome check --write",
@@ -20,6 +20,7 @@
 		"db:studio": "prisma studio"
 	},
 	"dependencies": {
+		"@dotenvx/dotenvx": "^1.46.0",
 		"@hono/node-server": "^1.15.0",
 		"@hono/zod-openapi": "^0.19.9",
 		"@prisma/client": "6.11.1",
