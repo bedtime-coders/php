@@ -4,6 +4,9 @@ import * as usersService from "./users.service";
 
 const app = new OpenAPIHono();
 
+/**
+ * Login
+ */
 app.openapi(loginRoute, async ({ req, json }) => {
 	const { email, password } = req.valid("json").user;
 	const { user, token } = await usersService.login({
@@ -12,6 +15,9 @@ app.openapi(loginRoute, async ({ req, json }) => {
 	return json({ user: { ...user, token } });
 });
 
+/**
+ * Register
+ */
 app.openapi(registerRoute, async ({ req, json }) => {
 	const { email, password, username, bio, image } = req.valid("json").user;
 	const { user, token } = await usersService.create({

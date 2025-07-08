@@ -6,7 +6,9 @@ import * as usersService from "./users.service";
 
 const app = new OpenAPIHono();
 
-// Get current user
+/**
+ * Get current user
+ */
 app.openapi(getCurrentUserRoute, async ({ req, json }) => {
 	const userId = req.header("x-user-id");
 	if (!userId) {
@@ -18,7 +20,9 @@ app.openapi(getCurrentUserRoute, async ({ req, json }) => {
 	return json({ user: { ...user, token } });
 });
 
-// Update user
+/**
+ * Update user
+ */
 app.openapi(updateUserRoute, async ({ req, json }) => {
 	const userId = req.header("x-user-id");
 	// Always return 200 with a valid user object to satisfy OpenAPIHono response typing

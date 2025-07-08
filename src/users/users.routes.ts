@@ -5,6 +5,7 @@ import { CreateUser, LoginUser, UpdateUser, User } from "./users.schema";
 export const loginRoute = createRoute({
 	method: "post",
 	path: "/login",
+	summary: "Authentication",
 	request: {
 		body: {
 			content: {
@@ -29,6 +30,7 @@ export const loginRoute = createRoute({
 export const registerRoute = createRoute({
 	method: "post",
 	path: "/",
+	summary: "Registration",
 	request: {
 		body: {
 			content: {
@@ -52,7 +54,8 @@ export const registerRoute = createRoute({
 
 export const getCurrentUserRoute = createRoute({
 	method: "get",
-	path: "/user",
+	path: "/",
+	summary: "Get Current User",
 	responses: {
 		[StatusCodes.OK]: {
 			content: {
@@ -63,11 +66,13 @@ export const getCurrentUserRoute = createRoute({
 			description: "Get current user",
 		},
 	},
+	security: [{ Token: [] }],
 });
 
 export const updateUserRoute = createRoute({
 	method: "put",
-	path: "/user",
+	path: "/",
+	summary: "Update User",
 	request: {
 		body: {
 			content: {
@@ -87,4 +92,5 @@ export const updateUserRoute = createRoute({
 			description: "Update user",
 		},
 	},
+	security: [{ Token: [] }],
 });

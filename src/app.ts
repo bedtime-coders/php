@@ -3,6 +3,7 @@ import { Scalar } from "@scalar/hono-api-reference";
 import { description, title } from "../package.json";
 import { env } from "./env";
 import { usersController } from "./users/users.controller";
+import { userController } from "./users/user.controller";
 
 const urls = {
 	json: "/docs/json",
@@ -18,18 +19,25 @@ app.doc(urls.json, {
 		version: "",
 		description,
 	},
+	servers: [
+		{
+			url: `http://${env.HOSTNAME}:${env.PORT}`,
+			description: "Local server",
+		},
+	],
+});
+
+app.openAPIRegistry.registerComponent("securitySchemes", "Token", {
+	type: "apiKey",
+	description: 'Prefix the token with "Token ", e.g. "Token jwt.token.here"',
+	in: "header",
+	name: "Authorization",
 });
 
 app.get(
 	urls.scalar,
 	Scalar({
 		url: urls.json,
-		servers: [
-			{
-				url: `http://${env.HOSTNAME}:${env.PORT}`,
-				description: "Local server",
-			},
-		],
 		pageTitle: title,
 	}),
 );
@@ -37,3 +45,4 @@ app.get(
 app.get("/", ({ redirect }) => redirect(urls.scalar));
 
 app.route("/users", usersController);
+app.route("/user", userController);
