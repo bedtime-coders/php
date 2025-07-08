@@ -3,6 +3,8 @@
    PHPStack
 </h1>
 
+[Prisma](https://www.prisma.io/) + [Hono](https://hono.dev/) + [pnpm](https://pnpm.io/) <sup>Absolutely no relation to the other PHP</sup>
+
 [![License](https://custom-icon-badges.demolab.com/github/license/bedtime-coders/phpstack?label=License&color=blue&logo=law&labelColor=0d1117&)](https://github.com/bedtime-coders/phpstack/blob/main/LICENSE)
 [![Prisma](https://img.shields.io/badge/Prisma-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
 [![Hono](https://custom-icon-badges.demolab.com/badge/Hono-1e1e20.svg?logo=honojs)](https://hono.dev/)
@@ -11,17 +13,6 @@
 [![Star](https://custom-icon-badges.demolab.com/github/stars/bedtime-coders/phpstack?logo=star&logoColor=373737&label=Star)](https://github.com/bedtime-coders/phpstack/stargazers/)
 
 </div>
-
-## Getting Started
-
-1. Clone the repository / Click "Use this template"
-2. Find-and-replace "repo-author" with the repository author (can be a username or an organization) 
-3. Find-and-replace "repo-name" with the repository name 
-4. Find-and-replace "project-name" with your project name
-5. Find-and-replace "Project Title" with your project title
-6. Follow `<!-- Badges instructions: -->` above (see raw code)
-7. Edit `LICENSE` and add name + year
-8. Remove this section
 
 ## Bedstack: Bun + ElysiaJS + Drizzle Stack
 
