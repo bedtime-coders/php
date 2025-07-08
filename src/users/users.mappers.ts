@@ -1,5 +1,5 @@
 import type { User } from "@prisma/client";
-import type { UserResponse } from "./users.interface";
+import type { User as UserResponse } from "./users.schema";
 
 /**
  * Map a user to a response
