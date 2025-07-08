@@ -16,6 +16,8 @@
 	"dependencies": {
 		"@hono/node-server": "^1.15.0",
 		"@hono/zod-openapi": "^0.19.9",
+		"@scalar/hono-api-reference": "^0.9.9",
+		"@scalar/openapi-to-markdown": "^0.2.19",
 		"@t3-oss/env-core": "^0.13.8",
 		"hono": "^4.8.4",
 		"http-status-codes": "^2.3.0",

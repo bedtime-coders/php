@@ -5,7 +5,7 @@ import { env } from "./env";
 
 console.info(chalk.gray("Starting PHp*"));
 
-serve({ fetch: app.fetch, port: env.PORT }, (info) => {
+serve({ fetch: app.fetch, port: env.PORT, hostname: env.HOSTNAME }, (info) => {
 	console.info(
 		`PHp* is up and running on ${chalk.blue(`http://${info.address}:${info.port}`)}`,
 	);
