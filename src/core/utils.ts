@@ -8,22 +8,32 @@ import {
 } from "./middleware/auth.middleware";
 
 /**
+ * Options for the createApp function.
+ */
+export type CreateAppOptions = {
+	/**
+	 * Whether to use authentication middleware.
+	 */
+	auth?: boolean;
+};
+
+/**
  * Create an OpenAPIHono app with optional authentication middleware.
  *
- * @param options - The options for the app.
+ * @param options - The options for the app. See {@link CreateAppOptions}.
  * @returns The OpenAPIHono app.
  */
-export function createApp(options: {
-	auth: true;
-}): OpenAPIHono<{ Variables: TokenVariables<typeof JwtPayload> }>;
-export function createApp(options?: {
-	auth?: false;
-}): OpenAPIHono<{ Variables: EmptyObject }>;
+export function createApp(
+	options: CreateAppOptions,
+): OpenAPIHono<{ Variables: TokenVariables<typeof JwtPayload> }>;
+export function createApp(
+	options?: CreateAppOptions,
+): OpenAPIHono<{ Variables: EmptyObject }>;
 export function createApp<
 	E extends Env = Env,
 	S extends Schema = EmptyObject,
 	BasePath extends string = "/",
->(options?: { auth?: boolean }) {
+>(options?: CreateAppOptions) {
 	const app = new OpenAPIHono<E, S, BasePath>();
 	if (options?.auth) {
 		app.use("*", auth());
