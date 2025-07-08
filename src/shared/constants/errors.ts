@@ -13,5 +13,5 @@ export const NORMAL_ERROR_CODES = [
 	StatusCodes.FORBIDDEN,
 	StatusCodes.NOT_FOUND,
 	StatusCodes.CONFLICT,
-	StatusCodes.UNPROCESSABLE_ENTITY,
+	StatusCodes.UNPROCESSABLE_CONTENT,
 ];

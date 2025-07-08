@@ -24,6 +24,9 @@ export const loginRoute = createRoute({
 			},
 			description: "Login successful",
 		},
+		[StatusCodes.UNPROCESSABLE_CONTENT]: {
+			description: "Malformed request body",
+		},
 	},
 });
 
@@ -48,6 +51,9 @@ export const registerRoute = createRoute({
 				},
 			},
 			description: "Registration successful",
+		},
+		[StatusCodes.UNPROCESSABLE_CONTENT]: {
+			description: "Malformed request body",
 		},
 	},
 });
@@ -96,6 +102,9 @@ export const updateUserRoute = createRoute({
 		},
 		[StatusCodes.UNAUTHORIZED]: {
 			description: "Unauthorized",
+		},
+		[StatusCodes.UNPROCESSABLE_CONTENT]: {
+			description: "Malformed request body",
 		},
 	},
 	security: [{ Token: [] }],

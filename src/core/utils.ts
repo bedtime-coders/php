@@ -15,11 +15,18 @@ export function formatZodErrors(
 		success: false;
 		error: ZodError;
 	},
-): { path: string; message: string }[] {
-	return result.error.errors.map((error) => ({
-		path: error.path.join("."),
-		message: error.message,
-	}));
+): Record<string, string[]> {
+	return result.error.errors.reduce(
+		(acc, error) => {
+			const path = error.path.join(".");
+			if (!acc[path]) {
+				acc[path] = [];
+			}
+			acc[path].push(error.message);
+			return acc;
+		},
+		{} as Record<string, string[]>,
+	);
 }
 
 type HonoInit<E extends Env> = ConstructorParameters<typeof Hono>[0] &
@@ -60,7 +67,7 @@ export function createApp<
 	const app = new OpenAPIHono<E, S, BasePath>({
 		defaultHook: (result, { json }) => {
 			if (result.success) return;
-			throw new HTTPException(StatusCodes.UNPROCESSABLE_ENTITY, {
+			throw new HTTPException(StatusCodes.UNPROCESSABLE_CONTENT, {
 				cause: result.error,
 				res: json({
 					errors: formatZodErrors(result),
