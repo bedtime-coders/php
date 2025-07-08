@@ -1,4 +1,5 @@
 import { createApp } from "@/core/utils";
+import { toResponse } from "./users.mappers";
 import { loginRoute, registerRoute } from "./users.routes";
 import * as usersService from "./users.service";
 
@@ -12,7 +13,7 @@ app.openapi(loginRoute, async ({ req, json }) => {
 	const { user, token } = await usersService.login({
 		user: { email, password },
 	});
-	return json({ user: { ...user, token } });
+	return json(toResponse(user, token));
 });
 
 /**
@@ -23,7 +24,7 @@ app.openapi(registerRoute, async ({ req, json }) => {
 	const { user, token } = await usersService.create({
 		user: { email, password, username, bio, image },
 	});
-	return json({ user: { ...user, token } });
+	return json(toResponse(user, token));
 });
 
 export const usersController = app;
