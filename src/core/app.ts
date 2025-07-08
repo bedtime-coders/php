@@ -1,16 +1,16 @@
-import { OpenAPIHono } from "@hono/zod-openapi";
 import { Scalar } from "@scalar/hono-api-reference";
 import { description, title } from "../../package.json";
 import { userController } from "../users/user.controller";
 import { usersController } from "../users/users.controller";
 import { env } from "./env";
+import { createApp } from "./utils";
 
 const urls = {
 	json: "/docs/json",
 	scalar: "/docs",
 };
 
-export const app = new OpenAPIHono();
+export const app = createApp();
 
 app.doc(urls.json, {
 	openapi: "3.0.0",

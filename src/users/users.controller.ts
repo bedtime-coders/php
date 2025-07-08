@@ -1,8 +1,8 @@
-import { OpenAPIHono } from "@hono/zod-openapi";
+import { createApp } from "@/core/utils";
 import { loginRoute, registerRoute } from "./users.routes";
 import * as usersService from "./users.service";
 
-const app = new OpenAPIHono();
+const app = createApp();
 
 /**
  * Login
