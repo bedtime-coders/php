@@ -5,6 +5,7 @@ export const env = createEnv({
 	server: {
 		PORT: z.number().default(3000),
 		HOSTNAME: z.ipv4().default("localhost"),
+		JWT_SECRET: z.string(),
 	},
 
 	/**

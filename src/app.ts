@@ -1,65 +1,39 @@
-import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
+import { OpenAPIHono } from "@hono/zod-openapi";
+import { Scalar } from "@scalar/hono-api-reference";
+import { description, title } from "../package.json";
+import { env } from "./env";
+import { usersController } from "./users/users.controller";
+
+const urls = {
+	json: "/docs/json",
+	scalar: "/docs",
+};
 
 export const app = new OpenAPIHono();
 
-app.openapi(
-	createRoute({
-		method: "get",
-		path: "/users/{id}",
-		request: {
-			params: z.object({
-				id: z.string(),
-			}),
-		},
-		responses: {
-			200: {
-				content: {
-					"application/json": {
-						schema: z.object({
-							id: z.string(),
-							age: z.number(),
-							name: z.string(),
-						}),
-					},
-				},
-				description: "Retrieve the user",
-			},
-		},
-	}),
-	(c) => {
-		const { id } = c.req.valid("param");
-		return c.json(
-			{
-				id,
-				age: 20,
-				name: "Ultra-man",
-			},
-			200, // You should specify the status code even if it is 200.
-		);
+app.doc(urls.json, {
+	openapi: "3.0.0",
+	info: {
+		title,
+		version: "",
+		description,
 	},
+});
+
+app.get(
+	urls.scalar,
+	Scalar({
+		url: urls.json,
+		servers: [
+			{
+				url: `http://${env.HOSTNAME}:${env.PORT}`,
+				description: "Local server",
+			},
+		],
+		pageTitle: title,
+	}),
 );
 
-// export const app = new Hono()
-// 	.use(envPlugin)
-// 	.use(
-// 		openapi({
-// 			documentation: {
-// 				info: { title, version: "", description },
-// 			},
-// 			exclude: ["/"],
-// 		}),
-// 	)
-// 	.get("/", ({ redirect }) => redirect("/docs"))
-// 	.get("/hello", ({ env }) => `Hello Bedstack on port ${env.PORT}`)
-// 	.post(
-// 		"/users",
-// 		async ({ body }) => {
-// 			const user = await db.insert(users).values(body).returning();
-// 			return user;
-// 		},
-// 		{
-// 			body: t.Object({
-// 				name: t.String({ minLength: 2, examples: ["John Doe"] }),
-// 			}),
-// 		},
-// 	);
+app.get("/", ({ redirect }) => redirect(urls.scalar));
+
+app.route("/users", usersController);

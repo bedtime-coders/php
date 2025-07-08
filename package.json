@@ -1,6 +1,6 @@
 {
-	"name": "phpstack",
-	"title": "PHPStack",
+	"name": "php",
+	"title": "PHp*",
 	"description": "Prisma + Hono + pnpm. Absolutely no relation to the other PHP.",
 	"type": "module",
 	"scripts": {
@@ -11,23 +11,36 @@
 		"check": "biome check",
 		"check:errors": "biome check --diagnostic-level=error",
 		"typecheck": "tsc --noEmit",
-		"clean": "rimraf node_modules"
+		"clean": "rimraf node_modules",
+		"db": "prisma",
+		"db:dev": "prisma dev",
+		"db:migrate": "prisma migrate dev",
+		"db:reset": "prisma migrate reset",
+		"db:generate": "prisma generate",
+		"db:studio": "prisma studio"
 	},
 	"dependencies": {
 		"@hono/node-server": "^1.15.0",
 		"@hono/zod-openapi": "^0.19.9",
+		"@prisma/client": "6.11.1",
 		"@scalar/hono-api-reference": "^0.9.9",
 		"@scalar/openapi-to-markdown": "^0.2.19",
 		"@t3-oss/env-core": "^0.13.8",
+		"argon2": "^0.43.0",
+		"bcrypt": "^6.0.0",
 		"hono": "^4.8.4",
 		"http-status-codes": "^2.3.0",
+		"jose": "^6.0.11",
 		"zod": "^3.25.76"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.0.6",
+		"@types/argon2": "^0.15.4",
+		"@types/bcrypt": "^5.0.2",
 		"@types/node": "^24.0.10",
 		"better-sqlite3": "^12.2.0",
 		"chalk": "^5.4.1",
+		"prisma": "^6.11.1",
 		"rimraf": "^6.0.1",
 		"tsx": "^4.20.3",
 		"typescript": "^5.8.3",
