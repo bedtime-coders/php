@@ -14,7 +14,10 @@
 		"clean": "rimraf node_modules"
 	},
 	"dependencies": {
+		"@hono/node-server": "^1.15.0",
+		"@hono/zod-openapi": "^0.19.9",
 		"@t3-oss/env-core": "^0.13.8",
+		"hono": "^4.8.4",
 		"http-status-codes": "^2.3.0",
 		"zod": "^3.25.76"
 	},
