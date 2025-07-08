@@ -1,7 +1,7 @@
 import { serve } from "@hono/node-server";
 import chalk from "chalk";
-import { app } from "./app";
-import { env } from "./env";
+import { app } from "./core/app";
+import { env } from "./core/env";
 
 console.info(chalk.gray("Starting PHp*"));
 

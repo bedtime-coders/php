@@ -1,7 +1,7 @@
 import * as argon2 from "argon2";
 import * as bcrypt from "bcrypt";
 import * as jose from "jose";
-import { env } from "@/env";
+import { env } from "@/core/env";
 import type { JwtPayload } from "@/shared/types";
 import { name } from "../../package.json";
 

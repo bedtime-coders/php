@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { env } from "@/env";
+import { env } from "@/core/env";
 import { type TokenVariables, token } from "./token.middleware";
 
 export type { TokenVariables };
