@@ -28,12 +28,6 @@ export const errorHandler = async (err: Error, c: Context) => {
 		},
 		status as ContentfulStatusCode,
 	);
-	console.error(
-		"DEBUG error type:",
-		err,
-		"constructor:",
-		err?.constructor?.name,
-	);
 	if (isApiError(err)) {
 		status = err.status;
 		logInfo = err;
