@@ -27,6 +27,13 @@ export function createApp<
 	const app = new OpenAPIHono<E, S, BasePath>();
 	if (options?.auth) {
 		app.use("*", auth());
+		app.openAPIRegistry.registerComponent("securitySchemes", "Token", {
+			type: "apiKey",
+			description:
+				'Prefix the token with "Token ", e.g. "Token jwt.token.here"',
+			in: "header",
+			name: "Authorization",
+		});
 	}
 	return app;
 }

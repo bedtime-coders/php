@@ -27,13 +27,6 @@ app.doc(urls.json, {
 	],
 });
 
-app.openAPIRegistry.registerComponent("securitySchemes", "Token", {
-	type: "apiKey",
-	description: 'Prefix the token with "Token ", e.g. "Token jwt.token.here"',
-	in: "header",
-	name: "Authorization",
-});
-
 app.get(
 	urls.scalar,
 	Scalar({
