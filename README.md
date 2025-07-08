@@ -81,4 +81,4 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for more information, including how to 
 
 ---
 
-<sup>*no relation to the [PHP](https://www.php.net), the scripting language</sup>
+<sup>*no relation to [PHP](https://www.php.net), the scripting language</sup>
