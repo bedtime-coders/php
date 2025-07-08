@@ -11,11 +11,10 @@ import type { CookiePrefixOptions } from "hono/utils/cookie";
 import { Jwt } from "hono/utils/jwt";
 import type { SignatureAlgorithm } from "hono/utils/jwt/jwa";
 import type { SignatureKey } from "hono/utils/jwt/jws";
-import type { ZodSchema } from "zod";
+import type { ZodSchema, z } from "zod";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type TokenVariables<T = any> = {
-	jwtPayload: T;
+export type TokenVariables<Schema extends z.ZodTypeAny = z.ZodTypeAny> = {
+	jwtPayload: z.infer<Schema>;
 };
 
 /**
@@ -134,8 +133,8 @@ export const token = <T = unknown>(options: {
 			});
 		}
 
-		let payload: any;
-		let cause: any;
+		let payload: unknown;
+		let cause: unknown;
 		try {
 			payload = await Jwt.verify(token, options.secret, options.alg);
 		} catch (e) {
