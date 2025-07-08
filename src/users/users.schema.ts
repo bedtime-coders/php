@@ -58,6 +58,8 @@ export const User = z.object({
 		z.object({
 			token: z.string().openapi({
 				description: "JWT token",
+				example:
+					"eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJjbWN1dzR3d2IwMDAweDMxeDY1emE2bTVxIiwiZW1haWwiOiJqYWtlQGpha2UuamFrZSIsInVzZXJuYW1lIjoiamFrZSIsImV4cCI6MTc1MjA5ODQ0OCwiYXVkIjoicGhwIiwiaWF0IjoxNzUyMDEyMDQ4fQ.kvUhCyPi8h_x1oqQB1W6abnhKcEgyf-moho6z9IBJlg",
 			}),
 		}),
 	),
