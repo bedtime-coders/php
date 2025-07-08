@@ -1,7 +1,5 @@
 <div align="center">
-<h1>
-   PHp*
-</h1>
+<h1>PHp*</h1>
 
 [Prisma](https://www.prisma.io/) + [Hono](https://hono.dev/) + [pnpm](https://pnpm.io/) 
 
