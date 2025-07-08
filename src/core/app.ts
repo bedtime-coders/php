@@ -1,56 +1,18 @@
-import { serveStatic } from "@hono/node-server/serve-static";
-import { Scalar } from "@scalar/hono-api-reference";
 import { HTTPException } from "hono/http-exception";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { NORMAL_ERROR_CODES, StatusCodes } from "@/shared/constants";
-import { description, title } from "../../package.json";
+import { parseWwwAuthenticate } from "@/shared/errors";
 import { userController } from "../users/user.controller";
 import { usersController } from "../users/users.controller";
-import { env } from "./env";
+import { registerOpenapi } from "./openapi";
 import { createApp } from "./utils";
-
-const urls = {
-	json: "/docs/json",
-	scalar: "/docs",
-};
 
 export const app = createApp();
 
-// --- OpenAPI ---
-app.doc(urls.json, {
-	openapi: "3.0.0",
-	info: {
-		title,
-		version: "",
-		description,
-	},
-	servers: [
-		{
-			url: `http://${env.HOSTNAME}:${env.PORT}`,
-			description: "Local server",
-		},
-	],
+registerOpenapi(app, {
+	json: "/docs/json",
+	scalar: "/docs",
 });
-app.use("/favicon.ico", serveStatic({ path: "./static/favicon.ico" }));
-app.get(
-	urls.scalar,
-	Scalar({
-		url: urls.json,
-		pageTitle: title,
-		favicon: "/favicon.ico",
-	}),
-);
-app.get("/", ({ redirect }) => redirect(urls.scalar));
-//
-
-function parseWwwAuthenticate(header: string) {
-	const errorMatch = header.match(/error="([^"]+)"/);
-	const descMatch = header.match(/error_description="([^"]+)"/);
-	return {
-		error: errorMatch ? errorMatch[1] : "unknown",
-		description: descMatch ? descMatch[1] : "An error occurred",
-	};
-}
 
 app.onError(async (err, c) => {
 	let logInfo: unknown = err;
