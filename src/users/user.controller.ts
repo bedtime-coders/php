@@ -6,7 +6,7 @@ import * as usersService from "./users.service";
 const app = createApp({ auth: true });
 
 /**
- * Get current user
+ * Get Current User
  */
 app.openapi(getCurrentUserRoute, async ({ json, get }) => {
 	const { uid: currentUserId } = get("jwtPayload");
@@ -15,7 +15,7 @@ app.openapi(getCurrentUserRoute, async ({ json, get }) => {
 });
 
 /**
- * Update user
+ * Update User
  */
 app.openapi(updateUserRoute, async ({ req, json, get }) => {
 	const { uid: currentUserId } = get("jwtPayload");

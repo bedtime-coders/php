@@ -6,7 +6,7 @@ import * as usersService from "./users.service";
 const app = createApp();
 
 /**
- * Login
+ * Authentication
  */
 app.openapi(loginRoute, async ({ req, json }) => {
 	const { user } = req.valid("json");
@@ -15,7 +15,7 @@ app.openapi(loginRoute, async ({ req, json }) => {
 });
 
 /**
- * Register
+ * Registration
  */
 app.openapi(registerRoute, async ({ req, json }) => {
 	const { user } = req.valid("json");
