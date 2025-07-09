@@ -83,3 +83,15 @@ export const LoginUser = z.object({
 	}),
 });
 export type LoginUser = z.infer<typeof LoginUser>;
+
+export const Profile = z.object({
+	profile: UserBase.omit({ email: true }).merge(
+		z.object({
+			following: z.boolean().openapi({
+				description: "Whether the user is following the profile",
+				example: true,
+			}),
+		}),
+	),
+});
+export type Profile = z.infer<typeof Profile>;
