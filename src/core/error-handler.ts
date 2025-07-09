@@ -1,8 +1,9 @@
+import { Prisma } from "@prisma/client";
 import type { Context } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { NORMAL_ERROR_CODES, StatusCodes } from "@/shared/constants";
-import { ApiError } from "@/shared/errors";
+import { ApiError, getDbError } from "@/shared/errors";
 
 function parseWwwAuthenticate(header: string) {
 	const errorMatch = header.match(/error="([^"]+)"/);
@@ -58,6 +59,11 @@ export const errorHandler = async (err: Error, c: Context) => {
 			logInfo = text;
 			response = res;
 		}
+	} else if (err instanceof Prisma.PrismaClientKnownRequestError) {
+		const dbError = getDbError(err);
+		status = dbError.status;
+		logInfo = err;
+		response = c.json(dbError.object, status as ContentfulStatusCode);
 	} else {
 		logInfo = err;
 	}

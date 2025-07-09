@@ -21,6 +21,7 @@
 		"db:migrate": "prisma migrate dev",
 		"db:reset": "prisma migrate reset",
 		"db:generate": "prisma generate",
+		"db:push": "prisma db push",
 		"db:studio": "prisma studio"
 	},
 	"dependencies": {

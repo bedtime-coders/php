@@ -153,6 +153,7 @@ export const getProfile = async (
 	const profile = await db.user.findFirstOrThrow({
 		where: { username },
 	});
+	console.log(currentUserId, profile.id);
 	const [{ exists: following } = { exists: false }] = await db.$queryRaw<
 		{ exists: boolean }[]
 	>`
