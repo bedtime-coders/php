@@ -4,6 +4,7 @@ import * as routes from "./users.routes";
 import * as service from "./users.service";
 
 const app = createApp();
+const authenticatedApp = createApp({ auth: true });
 
 /**
  * Get Profile
@@ -18,7 +19,7 @@ app.openapi(routes.getProfile, async ({ json, get, req }) => {
 /**
  * Follow User
  */
-app.openapi(routes.followUser, async ({ req, json, get }) => {
+authenticatedApp.openapi(routes.followUser, async ({ req, json, get }) => {
 	const username = req.param("username");
 	const { uid: currentUserId } = get("jwtPayload") || {};
 	const result = await service.follow(username, currentUserId);
@@ -28,11 +29,13 @@ app.openapi(routes.followUser, async ({ req, json, get }) => {
 /**
  * Unfollow User
  */
-app.openapi(routes.unfollowUser, async ({ req, json, get }) => {
+authenticatedApp.openapi(routes.unfollowUser, async ({ req, json, get }) => {
 	const username = req.param("username");
 	const { uid: currentUserId } = get("jwtPayload") || {};
 	const result = await service.unfollow(username, currentUserId);
 	return json(toProfileResponse(result.profile, result.following));
 });
 
-export const profilesController = app;
+export const profilesController = createApp()
+	.route("/", app)
+	.route("/", authenticatedApp);
