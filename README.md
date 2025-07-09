@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./static/extension_icon@128px.png" alt="PHp*" width="128" height="128">
+<img src="./static/logo.png" alt="PHp*" width="128" height="128">
 <h1>PHp*</h1>
 
 [Prisma](https://www.prisma.io/) + [Hono](https://hono.dev/) + [pnpm](https://pnpm.io/) 
