@@ -1,11 +1,14 @@
 import { OpenAPIHono, type OpenAPIHonoOptions } from "@hono/zod-openapi";
-import type { Hono, Env as HonoEnv, Schema, ValidationTargets } from "hono";
+import type { Hono, Env as HonoEnv, Schema } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { EmptyObject } from "type-fest";
-import type { ZodError } from "zod";
 import { StatusCodes } from "@/shared/constants";
+import { formatZodErrors } from "@/shared/errors";
 import type { JwtPayload } from "@/shared/schema";
-import { auth, type TokenVariables } from "./middleware/auth.middleware";
+import {
+	auth,
+	type TokenVariables,
+} from "../../core/middleware/auth.middleware";
 
 type DefaultEnv = HonoEnv & {
 	Variables: Partial<TokenVariables<typeof JwtPayload>>;
@@ -13,25 +16,6 @@ type DefaultEnv = HonoEnv & {
 type DefaultAuthEnv = HonoEnv & {
 	Variables: TokenVariables<typeof JwtPayload>;
 };
-
-export function formatZodErrors(
-	result: { target: keyof ValidationTargets } & {
-		success: false;
-		error: ZodError;
-	},
-): Record<string, string[]> {
-	return result.error.errors.reduce(
-		(acc, error) => {
-			const path = error.path.join(".");
-			if (!acc[path]) {
-				acc[path] = [];
-			}
-			acc[path].push(error.message);
-			return acc;
-		},
-		{} as Record<string, string[]>,
-	);
-}
 
 type HonoInit<E extends DefaultEnv | DefaultAuthEnv> = ConstructorParameters<
 	typeof Hono

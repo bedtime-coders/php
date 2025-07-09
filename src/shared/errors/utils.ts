@@ -1,5 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import camelcase from "camelcase";
+import type { ValidationTargets } from "hono";
+import type { ZodError } from "zod";
 import { DEFAULT_ENTITY_NAME, StatusCodes } from "../constants";
 import { ConflictingFieldsError } from "./conflicting-fields.error";
 import { PrismaErrorCode } from "./prisma";
@@ -90,4 +92,23 @@ export function getDbError(error: Prisma.PrismaClientKnownRequestError): {
 		},
 		status: StatusCodes.INTERNAL_SERVER_ERROR,
 	};
+}
+
+export function formatZodErrors(
+	result: { target: keyof ValidationTargets } & {
+		success: false;
+		error: ZodError;
+	},
+): Record<string, string[]> {
+	return result.error.errors.reduce(
+		(acc, error) => {
+			const path = error.path.join(".");
+			if (!acc[path]) {
+				acc[path] = [];
+			}
+			acc[path].push(error.message);
+			return acc;
+		},
+		{} as Record<string, string[]>,
+	);
 }

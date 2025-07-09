@@ -1,4 +1,4 @@
-import { createApp } from "@/core/utils";
+import { createApp } from "@/shared/utils";
 import { toResponse } from "./mappers";
 import * as routes from "./users.routes";
 import * as service from "./users.service";
