@@ -50,6 +50,7 @@ export function registerOpenapi<E extends Env>(
 			url: urls.json,
 			pageTitle: title,
 			favicon,
+			persistAuth: true,
 		}),
 	);
 	app.get("/", ({ redirect }) => redirect(urls.scalar));
