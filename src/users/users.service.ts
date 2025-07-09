@@ -5,7 +5,7 @@ import * as jose from "jose";
 import { db } from "@/core/db";
 import { env } from "@/core/env";
 import { assertNoConflicts } from "@/shared/errors";
-import type { JwtPayload } from "@/shared/types";
+import type { JwtPayload } from "@/shared/schema";
 import { name } from "../../package.json";
 import type { CreateUser, LoginUser, UpdateUser } from "./users.schema";
 

@@ -59,11 +59,8 @@ export const token = <T = unknown>(options: {
 		  };
 	alg?: SignatureAlgorithm;
 	headerName?: string;
+	optional?: boolean; // <--- add this
 }): MiddlewareHandler => {
-	if (!options || !options.secret) {
-		throw new Error('JWT auth middleware requires options for "secret"');
-	}
-
 	if (!crypto.subtle || !crypto.subtle.importKey) {
 		throw new Error(
 			"`crypto.subtle.importKey` is undefined. JWT auth middleware requires it.",
@@ -79,6 +76,10 @@ export const token = <T = unknown>(options: {
 			const parts = credentials.split(/\s+/);
 			if (parts.length !== 2) {
 				const errDescription = "invalid credentials structure";
+				if (options.optional) {
+					await next();
+					return;
+				}
 				throw new HTTPException(StatusCodes.UNAUTHORIZED, {
 					message: errDescription,
 					res: unauthorizedResponse({
@@ -123,6 +124,10 @@ export const token = <T = unknown>(options: {
 		}
 
 		if (!token) {
+			if (options.optional) {
+				await next();
+				return;
+			}
 			const errDescription = "no authorization included in request";
 			throw new HTTPException(StatusCodes.UNAUTHORIZED, {
 				message: errDescription,
@@ -142,6 +147,10 @@ export const token = <T = unknown>(options: {
 			cause = e;
 		}
 		if (!payload) {
+			if (options.optional) {
+				await next();
+				return;
+			}
 			throw new HTTPException(StatusCodes.UNAUTHORIZED, {
 				message: "Unauthorized",
 				res: unauthorizedResponse({
@@ -157,6 +166,10 @@ export const token = <T = unknown>(options: {
 		if (options.schema) {
 			const result = options.schema.safeParse(payload);
 			if (!result.success) {
+				if (options.optional) {
+					await next();
+					return;
+				}
 				throw new HTTPException(StatusCodes.UNAUTHORIZED, {
 					message: "Invalid JWT payload",
 					res: unauthorizedResponse({

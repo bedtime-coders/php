@@ -1,5 +1,5 @@
 import { createApp } from "@/core/utils";
-import { toResponse } from "./mappers";
+import { toProfileResponse, toResponse } from "./mappers";
 import * as routes from "./users.routes";
 import * as service from "./users.service";
 
@@ -8,20 +8,31 @@ const app = createApp();
 /**
  * Get Profile
  */
-app.openapi(routes.getProfile, async ({ json, get }) => {
-	const { uid: currentUserId } = get("jwtPayload");
-	const result = await service.findOne(currentUserId);
-	return json(toResponse(result.user, result.token));
+app.openapi(routes.getProfile, async ({ json, get, req }) => {
+	const username = req.param("username");
+	const { uid: currentUserId } = get("jwtPayload") || {};
+	const result = await service.getProfile(username, currentUserId);
+	return json(toResponse(result.profile, result.following));
 });
 
 /**
- * Update User
+ * Follow User
  */
-app.openapi(routes.updateUser, async ({ req, json, get }) => {
+app.openapi(routes.followUser, async ({ req, json, get }) => {
+	const username = req.param("username");
 	const { uid: currentUserId } = get("jwtPayload");
-	const { user } = req.valid("json");
-	const result = await service.update(currentUserId, { user });
-	return json(toResponse(result.user, result.token));
+	const result = await service.follow(username, currentUserId);
+	return json(toProfileResponse(result.profile, result.following));
 });
 
-export const userController = app;
+/**
+ * Unfollow User
+ */
+app.openapi(routes.unfollowUser, async ({ req, json, get }) => {
+	const username = req.param("username");
+	const { uid: currentUserId } = get("jwtPayload");
+	const result = await service.unfollow(username, currentUserId);
+	return json(toProfileResponse(result.profile, result.following));
+});
+
+export const profilesController = app;
