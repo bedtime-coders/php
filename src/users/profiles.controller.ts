@@ -1,5 +1,5 @@
 import { createApp } from "@/core/utils";
-import { toProfileResponse, toResponse } from "./mappers";
+import { toProfileResponse } from "./mappers";
 import * as routes from "./users.routes";
 import * as service from "./users.service";
 
@@ -12,7 +12,7 @@ app.openapi(routes.getProfile, async ({ json, get, req }) => {
 	const username = req.param("username");
 	const { uid: currentUserId } = get("jwtPayload") || {};
 	const result = await service.getProfile(username, currentUserId);
-	return json(toResponse(result.profile, result.following));
+	return json(toProfileResponse(result.profile, result.following));
 });
 
 /**
@@ -20,7 +20,7 @@ app.openapi(routes.getProfile, async ({ json, get, req }) => {
  */
 app.openapi(routes.followUser, async ({ req, json, get }) => {
 	const username = req.param("username");
-	const { uid: currentUserId } = get("jwtPayload");
+	const { uid: currentUserId } = get("jwtPayload") || {};
 	const result = await service.follow(username, currentUserId);
 	return json(toProfileResponse(result.profile, result.following));
 });
@@ -30,7 +30,7 @@ app.openapi(routes.followUser, async ({ req, json, get }) => {
  */
 app.openapi(routes.unfollowUser, async ({ req, json, get }) => {
 	const username = req.param("username");
-	const { uid: currentUserId } = get("jwtPayload");
+	const { uid: currentUserId } = get("jwtPayload") || {};
 	const result = await service.unfollow(username, currentUserId);
 	return json(toProfileResponse(result.profile, result.following));
 });
