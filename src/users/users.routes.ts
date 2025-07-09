@@ -119,7 +119,7 @@ export const updateUser = createRoute({
 export const getProfile = createRoute({
 	method: "get",
 	path: "/{username}",
-	summary: "Get Profile by Username",
+	summary: "Get Profile",
 	responses: {
 		[StatusCodes.OK]: {
 			content: {
@@ -138,7 +138,7 @@ export const getProfile = createRoute({
 export const followUser = createRoute({
 	method: "post",
 	path: "/{username}/follow",
-	summary: "Follow User",
+	summary: "Follow user",
 	responses: {
 		[StatusCodes.OK]: {
 			content: {
@@ -161,7 +161,7 @@ export const followUser = createRoute({
 export const unfollowUser = createRoute({
 	method: "delete",
 	path: "/{username}/follow",
-	summary: "Unfollow User",
+	summary: "Unfollow user",
 	responses: {
 		[StatusCodes.OK]: {
 			content: {

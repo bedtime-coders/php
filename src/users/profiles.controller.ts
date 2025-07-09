@@ -17,7 +17,7 @@ app.openapi(routes.getProfile, async ({ json, get, req }) => {
 });
 
 /**
- * Follow User
+ * Follow user
  */
 authenticatedApp.openapi(routes.followUser, async ({ req, json, get }) => {
 	const username = req.param("username");
@@ -27,7 +27,7 @@ authenticatedApp.openapi(routes.followUser, async ({ req, json, get }) => {
 });
 
 /**
- * Unfollow User
+ * Unfollow user
  */
 authenticatedApp.openapi(routes.unfollowUser, async ({ req, json, get }) => {
 	const username = req.param("username");
