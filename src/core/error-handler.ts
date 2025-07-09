@@ -4,7 +4,13 @@ import { HTTPException } from "hono/http-exception";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { match, P } from "ts-pattern";
 import { NORMAL_ERROR_CODES, StatusCodes } from "@/shared/constants";
-import { ApiError, getDbError } from "@/shared/errors";
+import {
+	ApiError,
+	ConflictingFieldsError,
+	getDbError,
+	RealWorldError,
+} from "@/shared/errors";
+import { SelfFollowError } from "@/users/errors/self-follow.error";
 
 function parseWwwAuthenticate(header: string) {
 	const errorMatch = header.match(/error="([^"]+)"/);
@@ -64,6 +70,32 @@ export const errorHandler = async (err: Error, c: Context) => {
 				),
 			};
 		})
+		.with(P.instanceOf(ConflictingFieldsError), (err) => ({
+			status: StatusCodes.CONFLICT,
+			logInfo: err,
+			response: c.json(
+				{
+					errors: err.errors,
+				},
+				StatusCodes.CONFLICT as ContentfulStatusCode,
+			),
+		}))
+		.with(P.instanceOf(SelfFollowError), (err) => ({
+			status: StatusCodes.UNPROCESSABLE_CONTENT,
+			logInfo: err,
+			response: c.json(
+				err.errors,
+				StatusCodes.UNPROCESSABLE_CONTENT as ContentfulStatusCode,
+			),
+		}))
+		.with(P.instanceOf(RealWorldError), (err) => ({
+			status: StatusCodes.BAD_REQUEST,
+			logInfo: err,
+			response: c.json(
+				err.errors,
+				StatusCodes.BAD_REQUEST as ContentfulStatusCode,
+			),
+		}))
 		.otherwise(() => ({
 			status: StatusCodes.INTERNAL_SERVER_ERROR,
 			logInfo: err,

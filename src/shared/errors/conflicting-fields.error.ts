@@ -1,5 +1,4 @@
 import { objectify } from "radashi";
-import { StatusCodes } from "@/shared/constants";
 import { RealWorldError } from "./realworld.error";
 
 export class ConflictingFieldsError extends RealWorldError {
@@ -16,7 +15,6 @@ export class ConflictingFieldsError extends RealWorldError {
 		public fields: string[],
 	) {
 		super(
-			StatusCodes.CONFLICT,
 			objectify(
 				fields,
 				(field) => `${entity}.${field}`,

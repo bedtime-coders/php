@@ -7,6 +7,7 @@ import { env } from "@/core/env";
 import { assertNoConflicts } from "@/shared/errors";
 import type { JwtPayload } from "@/shared/schema";
 import { name } from "../../package.json";
+import { SelfFollowError } from "./errors";
 import type { CreateUser, LoginUser, UpdateUser } from "./users.schema";
 
 const hashPassword = async (password: string) => {
@@ -153,7 +154,6 @@ export const getProfile = async (
 	const profile = await db.user.findFirstOrThrow({
 		where: { username },
 	});
-	console.log(currentUserId, profile.id);
 	const [{ exists: following } = { exists: false }] = await db.$queryRaw<
 		{ exists: boolean }[]
 	>`
@@ -171,7 +171,7 @@ const assertNoSelfFollowUnfollow = (
 	currentUserId: string,
 ) => {
 	if (profileId === currentUserId) {
-		throw new Error("You cannot follow/unfollow yourself");
+		throw new SelfFollowError();
 	}
 };
 
