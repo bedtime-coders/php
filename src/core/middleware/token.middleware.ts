@@ -59,15 +59,43 @@ export const token = <T = unknown>(options: {
 		  };
 	alg?: SignatureAlgorithm;
 	headerName?: string;
+	optional?: boolean; // <--- add this
 }): MiddlewareHandler => {
-	if (!options || !options.secret) {
-		throw new Error('JWT auth middleware requires options for "secret"');
-	}
-
 	if (!crypto.subtle || !crypto.subtle.importKey) {
 		throw new Error(
 			"`crypto.subtle.importKey` is undefined. JWT auth middleware requires it.",
 		);
+	}
+
+	function handleInvalidToken(
+		ctx: Context,
+		options: { optional?: boolean },
+		errDescription: string,
+		cause?: unknown,
+	) {
+		if (options.optional) {
+			// Only allow next() if there is no token at all; if we reach here, a token was present but invalid
+			throw new HTTPException(StatusCodes.UNAUTHORIZED, {
+				message: errDescription,
+				res: unauthorizedResponse({
+					ctx,
+					error: "invalid_token",
+					statusText: "Unauthorized",
+					errDescription,
+				}),
+				cause,
+			});
+		}
+		throw new HTTPException(StatusCodes.UNAUTHORIZED, {
+			message: errDescription,
+			res: unauthorizedResponse({
+				ctx,
+				error: "invalid_token",
+				statusText: "Unauthorized",
+				errDescription,
+			}),
+			cause,
+		});
 	}
 
 	return async function jwt(ctx, next) {
@@ -78,15 +106,8 @@ export const token = <T = unknown>(options: {
 		if (credentials) {
 			const parts = credentials.split(/\s+/);
 			if (parts.length !== 2) {
-				const errDescription = "invalid credentials structure";
-				throw new HTTPException(StatusCodes.UNAUTHORIZED, {
-					message: errDescription,
-					res: unauthorizedResponse({
-						ctx,
-						error: "invalid_request",
-						errDescription,
-					}),
-				});
+				handleInvalidToken(ctx, options, "invalid credentials structure");
+				return;
 			}
 			token = parts[1];
 		} else if (options.cookie) {
@@ -123,15 +144,12 @@ export const token = <T = unknown>(options: {
 		}
 
 		if (!token) {
-			const errDescription = "no authorization included in request";
-			throw new HTTPException(StatusCodes.UNAUTHORIZED, {
-				message: errDescription,
-				res: unauthorizedResponse({
-					ctx,
-					error: "invalid_request",
-					errDescription,
-				}),
-			});
+			if (options.optional) {
+				await next();
+				return;
+			}
+			handleInvalidToken(ctx, options, "no authorization included in request");
+			return;
 		}
 
 		let payload: unknown;
@@ -142,29 +160,15 @@ export const token = <T = unknown>(options: {
 			cause = e;
 		}
 		if (!payload) {
-			throw new HTTPException(StatusCodes.UNAUTHORIZED, {
-				message: "Unauthorized",
-				res: unauthorizedResponse({
-					ctx,
-					error: "invalid_token",
-					statusText: "Unauthorized",
-					errDescription: "token verification failure",
-				}),
-				cause,
-			});
+			handleInvalidToken(ctx, options, "token verification failure", cause);
+			return;
 		}
 
 		if (options.schema) {
 			const result = options.schema.safeParse(payload);
 			if (!result.success) {
-				throw new HTTPException(StatusCodes.UNAUTHORIZED, {
-					message: "Invalid JWT payload",
-					res: unauthorizedResponse({
-						ctx,
-						error: "invalid_token",
-						errDescription: "JWT payload validation failed",
-					}),
-				});
+				handleInvalidToken(ctx, options, "JWT payload validation failed");
+				return;
 			}
 			ctx.set("jwtPayload", result.data);
 		} else {

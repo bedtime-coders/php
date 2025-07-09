@@ -1,6 +1,12 @@
 import { createRoute } from "@hono/zod-openapi";
 import { StatusCodes } from "@/shared/constants";
-import { CreateUser, LoginUser, UpdateUser, User } from "./users.schema";
+import {
+	CreateUser,
+	LoginUser,
+	Profile,
+	UpdateUser,
+	User,
+} from "./users.schema";
 
 export const login = createRoute({
 	method: "post",
@@ -105,6 +111,71 @@ export const updateUser = createRoute({
 		},
 		[StatusCodes.UNPROCESSABLE_CONTENT]: {
 			description: "Malformed request body",
+		},
+	},
+	security: [{ Token: [] }],
+});
+
+export const getProfile = createRoute({
+	method: "get",
+	path: "/{username}",
+	summary: "Get Profile",
+	responses: {
+		[StatusCodes.OK]: {
+			content: {
+				"application/json": {
+					schema: Profile,
+				},
+			},
+			description: "Profile found",
+		},
+		[StatusCodes.NOT_FOUND]: {
+			description: "Profile not found",
+		},
+	},
+});
+
+export const followUser = createRoute({
+	method: "post",
+	path: "/{username}/follow",
+	summary: "Follow user",
+	responses: {
+		[StatusCodes.OK]: {
+			content: {
+				"application/json": {
+					schema: Profile,
+				},
+			},
+			description: "Now following user",
+		},
+		[StatusCodes.UNAUTHORIZED]: {
+			description: "Unauthorized",
+		},
+		[StatusCodes.NOT_FOUND]: {
+			description: "Profile not found",
+		},
+	},
+	security: [{ Token: [] }],
+});
+
+export const unfollowUser = createRoute({
+	method: "delete",
+	path: "/{username}/follow",
+	summary: "Unfollow user",
+	responses: {
+		[StatusCodes.OK]: {
+			content: {
+				"application/json": {
+					schema: Profile,
+				},
+			},
+			description: "No longer following user",
+		},
+		[StatusCodes.UNAUTHORIZED]: {
+			description: "Unauthorized",
+		},
+		[StatusCodes.NOT_FOUND]: {
+			description: "Profile not found",
 		},
 	},
 	security: [{ Token: [] }],

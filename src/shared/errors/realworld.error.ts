@@ -1,7 +1,6 @@
-import { ApiError } from "./api.error";
-export class RealWorldError extends ApiError {
-	constructor(status: number, errors: Record<string, string[]>) {
-		super(status, errors);
+export class RealWorldError extends Error {
+	constructor(public errors: Record<string, string[]>) {
+		super(JSON.stringify(errors));
 		this.name = "RealWorldError";
 	}
 }

@@ -5,8 +5,9 @@ import * as jose from "jose";
 import { db } from "@/core/db";
 import { env } from "@/core/env";
 import { assertNoConflicts } from "@/shared/errors";
-import type { JwtPayload } from "@/shared/types";
+import type { JwtPayload } from "@/shared/schema";
 import { name } from "../../package.json";
+import { SelfFollowError } from "./errors";
 import type { CreateUser, LoginUser, UpdateUser } from "./users.schema";
 
 const hashPassword = async (password: string) => {
@@ -44,6 +45,7 @@ export const login = async ({
 		where: { email },
 	});
 	if (!(await verifyPassword(password, user.password)))
+		// TODO: Better error
 		throw new Error("Invalid credentials");
 
 	const token = await signToken({
@@ -140,4 +142,59 @@ export const findOne = async (
 		username: user.username,
 	});
 	return { user, token };
+};
+
+export const getProfile = async (
+	username: string,
+	currentUserId?: string,
+): Promise<{
+	profile: User;
+	following: boolean;
+}> => {
+	const profile = await db.user.findFirstOrThrow({
+		where: { username },
+	});
+	const [{ exists: following } = { exists: false }] = await db.$queryRaw<
+		{ exists: boolean }[]
+	>`
+  SELECT EXISTS (
+    SELECT 1
+    FROM "_UserFollows"
+    WHERE "A" = ${currentUserId} AND "B" = ${profile.id}
+  ) AS "exists"
+`;
+	return { profile, following };
+};
+
+const assertNoSelfFollowUnfollow = (
+	profileId: string,
+	currentUserId: string,
+) => {
+	if (profileId === currentUserId) {
+		throw new SelfFollowError();
+	}
+};
+
+export const follow = async (username: string, currentUserId: string) => {
+	const profile = await db.user.findFirstOrThrow({
+		where: { username },
+	});
+	assertNoSelfFollowUnfollow(profile.id, currentUserId);
+	await db.user.update({
+		where: { id: currentUserId },
+		data: { following: { connect: { id: profile.id } } },
+	});
+	return { profile, following: true };
+};
+
+export const unfollow = async (username: string, currentUserId: string) => {
+	const profile = await db.user.findFirstOrThrow({
+		where: { username },
+	});
+	assertNoSelfFollowUnfollow(profile.id, currentUserId);
+	await db.user.update({
+		where: { id: currentUserId },
+		data: { following: { disconnect: { id: profile.id } } },
+	});
+	return { profile, following: false };
 };

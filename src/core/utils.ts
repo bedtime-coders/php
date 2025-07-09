@@ -1,14 +1,18 @@
 import { OpenAPIHono, type OpenAPIHonoOptions } from "@hono/zod-openapi";
-import type { Env, Hono, Schema, ValidationTargets } from "hono";
+import type { Hono, Env as HonoEnv, Schema, ValidationTargets } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { EmptyObject } from "type-fest";
 import type { ZodError } from "zod";
 import { StatusCodes } from "@/shared/constants";
-import {
-	auth,
-	type JwtPayload,
-	type TokenVariables,
-} from "./middleware/auth.middleware";
+import type { JwtPayload } from "@/shared/schema";
+import { auth, type TokenVariables } from "./middleware/auth.middleware";
+
+type DefaultEnv = HonoEnv & {
+	Variables: Partial<TokenVariables<typeof JwtPayload>>;
+};
+type DefaultAuthEnv = HonoEnv & {
+	Variables: TokenVariables<typeof JwtPayload>;
+};
 
 export function formatZodErrors(
 	result: { target: keyof ValidationTargets } & {
@@ -29,13 +33,17 @@ export function formatZodErrors(
 	);
 }
 
-type HonoInit<E extends Env> = ConstructorParameters<typeof Hono>[0] &
+type HonoInit<E extends DefaultEnv | DefaultAuthEnv> = ConstructorParameters<
+	typeof Hono
+>[0] &
 	OpenAPIHonoOptions<E>;
 
 /**
  * Options for the createApp function.
  */
-export type CreateAppOptions<E extends Env = Env> = {
+export type CreateAppOptions<
+	E extends DefaultEnv | DefaultAuthEnv = DefaultEnv,
+> = {
 	/**
 	 * Whether to use authentication middleware.
 	 */
@@ -53,14 +61,24 @@ export type CreateAppOptions<E extends Env = Env> = {
  * @param options - The options for the app. See {@link CreateAppOptions}.
  * @returns The OpenAPIHono app.
  */
-export function createApp(
-	options: CreateAppOptions,
-): OpenAPIHono<{ Variables: TokenVariables<typeof JwtPayload> }>;
-export function createApp(
-	options?: CreateAppOptions,
-): OpenAPIHono<{ Variables: EmptyObject }>;
 export function createApp<
-	E extends Env = Env,
+	S extends Schema = EmptyObject,
+	BasePath extends string = "/",
+>(
+	options: CreateAppOptions & { auth: true },
+): OpenAPIHono<{ Variables: TokenVariables<typeof JwtPayload> }, S, BasePath>;
+export function createApp<
+	E extends DefaultEnv = DefaultEnv,
+	S extends Schema = EmptyObject,
+	BasePath extends string = "/",
+>(options: CreateAppOptions & { auth: false }): OpenAPIHono<E, S, BasePath>;
+export function createApp<
+	E extends DefaultEnv = DefaultEnv,
+	S extends Schema = EmptyObject,
+	BasePath extends string = "/",
+>(): OpenAPIHono<E, S, BasePath>;
+export function createApp<
+	E extends DefaultEnv = DefaultEnv,
 	S extends Schema = EmptyObject,
 	BasePath extends string = "/",
 >(options?: CreateAppOptions<E>) {
@@ -76,15 +94,6 @@ export function createApp<
 		},
 		...options?.init,
 	});
-	if (options?.auth) {
-		app.use("*", auth());
-		app.openAPIRegistry.registerComponent("securitySchemes", "Token", {
-			type: "apiKey",
-			description:
-				'Prefix the token with "Token ", e.g. "Token jwt.token.here"',
-			in: "header",
-			name: "Authorization",
-		});
-	}
+	app.use("*", auth(options?.auth ? "required" : "optional"));
 	return app;
 }

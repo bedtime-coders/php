@@ -15,3 +15,8 @@ export const NORMAL_ERROR_CODES = [
 	StatusCodes.CONFLICT,
 	StatusCodes.UNPROCESSABLE_CONTENT,
 ];
+
+/**
+ * Default entity name for database errors
+ */
+export const DEFAULT_ENTITY_NAME = "database";

@@ -21,6 +21,7 @@
 		"db:migrate": "prisma migrate dev",
 		"db:reset": "prisma migrate reset",
 		"db:generate": "prisma generate",
+		"db:push": "prisma db push",
 		"db:studio": "prisma studio"
 	},
 	"dependencies": {
@@ -37,6 +38,7 @@
 		"hono": "^4.8.4",
 		"jose": "^6.0.11",
 		"radashi": "^12.6.0",
+		"ts-pattern": "^5.7.1",
 		"type-fest": "^4.41.0",
 		"zod": "^3.25.76"
 	},

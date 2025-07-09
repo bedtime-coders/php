@@ -1,8 +1,16 @@
+import { Prisma } from "@prisma/client";
 import type { Context } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
+import { match, P } from "ts-pattern";
 import { NORMAL_ERROR_CODES, StatusCodes } from "@/shared/constants";
-import { ApiError } from "@/shared/errors";
+import {
+	ApiError,
+	ConflictingFieldsError,
+	getDbError,
+	RealWorldError,
+} from "@/shared/errors";
+import { SelfFollowError } from "@/users/errors/self-follow.error";
 
 function parseWwwAuthenticate(header: string) {
 	const errorMatch = header.match(/error="([^"]+)"/);
@@ -13,57 +21,74 @@ function parseWwwAuthenticate(header: string) {
 	};
 }
 
-function isApiError(err: unknown): err is ApiError {
-	return err instanceof ApiError;
-}
+const createErrorResponse = (
+	c: Context,
+	status: number,
+	errOrErrors: Record<string, string[]> | { errors: Record<string, string[]> },
+) => ({
+	status,
+	logInfo: errOrErrors,
+	response: c.json(
+		typeof errOrErrors === "object" && "errors" in errOrErrors
+			? { errors: errOrErrors.errors }
+			: { errors: errOrErrors },
+		status as ContentfulStatusCode,
+	),
+});
 
 export const errorHandler = async (err: Error, c: Context) => {
-	let logInfo: unknown = err;
-	let status: number = StatusCodes.INTERNAL_SERVER_ERROR;
-	let response: Response = c.json(
-		{
-			errors: {
-				unknown: ["an error occurred"],
-			},
-		},
-		status as ContentfulStatusCode,
-	);
-	if (isApiError(err)) {
-		status = err.status;
-		logInfo = err;
-		response = c.json({ errors: err.errors }, status as ContentfulStatusCode);
-	} else if (err instanceof HTTPException) {
-		const res = err.getResponse();
-		status = res.status;
-		const resClone = res.clone();
-		const contentType = resClone.headers.get("content-type") || "";
-		const wwwAuth = resClone.headers.get("WWW-Authenticate");
-		if (wwwAuth) {
-			const { error, description } = parseWwwAuthenticate(wwwAuth);
-			logInfo = { error, description, status: res.status };
-			response = c.json(
-				{
-					errors: {
-						[error]: [description],
-					},
-				},
-				res.status as ContentfulStatusCode,
-			);
-		} else if (contentType.includes("application/json")) {
-			const body = await resClone.json();
-			logInfo = body;
-			response = res;
-		} else {
+	const result = await match(err)
+		.with(P.instanceOf(ApiError), (err) =>
+			createErrorResponse(c, err.status, err.errors),
+		)
+		.with(P.instanceOf(HTTPException), async (err) => {
+			const res = err.getResponse();
+			const resClone = res.clone();
+			const contentType = resClone.headers.get("content-type") || "";
+			const wwwAuth = resClone.headers.get("WWW-Authenticate");
+
+			if (wwwAuth) {
+				const { error, description } = parseWwwAuthenticate(wwwAuth);
+				return createErrorResponse(c, res.status, { [error]: [description] });
+			}
+
+			if (contentType.includes("application/json")) {
+				const body = await resClone.json();
+				return { status: res.status, logInfo: body, response: res };
+			}
+
 			const text = await resClone.text();
-			logInfo = text;
-			response = res;
-		}
-	} else {
-		logInfo = err;
+			return { status: res.status, logInfo: text, response: res };
+		})
+		.with(P.instanceOf(Prisma.PrismaClientKnownRequestError), (err) => {
+			const dbError = getDbError(err);
+			return {
+				status: dbError.status,
+				logInfo: err,
+				response: c.json(
+					dbError.object,
+					dbError.status as ContentfulStatusCode,
+				),
+			};
+		})
+		.with(P.instanceOf(ConflictingFieldsError), (err) =>
+			createErrorResponse(c, StatusCodes.CONFLICT, err),
+		)
+		.with(P.instanceOf(SelfFollowError), (err) =>
+			createErrorResponse(c, StatusCodes.UNPROCESSABLE_CONTENT, err),
+		)
+		.with(P.instanceOf(RealWorldError), (err) =>
+			createErrorResponse(c, StatusCodes.BAD_REQUEST, err),
+		)
+		.otherwise(() =>
+			createErrorResponse(c, StatusCodes.INTERNAL_SERVER_ERROR, {
+				unknown: ["an error occurred"],
+			}),
+		);
+
+	if (!NORMAL_ERROR_CODES.includes(result.status)) {
+		console.error(result.logInfo);
 	}
 
-	if (!NORMAL_ERROR_CODES.includes(status)) {
-		console.error(logInfo);
-	}
-	return response;
+	return result.response;
 };

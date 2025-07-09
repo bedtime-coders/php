@@ -1,4 +1,8 @@
+import type { Prisma } from "@prisma/client";
+import camelcase from "camelcase";
+import { DEFAULT_ENTITY_NAME, StatusCodes } from "../constants";
 import { ConflictingFieldsError } from "./conflicting-fields.error";
+import { PrismaErrorCode } from "./prisma";
 
 type Fields<T extends string> = Partial<Record<T, string>>;
 
@@ -37,4 +41,53 @@ export async function assertNoConflicts<T extends string>(
 	if (conflictingFields.length > 0) {
 		throw new ConflictingFieldsError(entity, conflictingFields);
 	}
+}
+
+const modelToEntityName = (model: string) => camelcase(model);
+
+const getEntityNameFromMeta = (
+	meta: Prisma.PrismaClientKnownRequestError["meta"],
+): string => {
+	if (!meta) return DEFAULT_ENTITY_NAME;
+
+	// Check if meta.cause matches "No 'EntityName' record" pattern
+	if (meta.cause && typeof meta.cause === "string") {
+		const match = meta.cause.match(/No '([^']+)' record/);
+		if (match?.[1]) {
+			return camelcase(match[1]);
+		}
+	}
+
+	if (meta.modelName && typeof meta.modelName === "string")
+		return modelToEntityName(meta.modelName);
+	if (meta.model && typeof meta.model === "string")
+		return modelToEntityName(meta.model);
+	return DEFAULT_ENTITY_NAME;
+};
+
+export function getDbError(error: Prisma.PrismaClientKnownRequestError): {
+	object: { errors: Record<string, string[]> };
+	status: number;
+} {
+	if (error.code === PrismaErrorCode.RecordNotFound) {
+		return {
+			object: {
+				errors: {
+					[getEntityNameFromMeta(error.meta)]: ["not found"],
+				},
+			},
+			status: StatusCodes.NOT_FOUND,
+		};
+	}
+	if (!(error.code in PrismaErrorCode)) {
+		console.error(error);
+	}
+	return {
+		object: {
+			errors: {
+				database: ["error occurred"],
+			},
+		},
+		status: StatusCodes.INTERNAL_SERVER_ERROR,
+	};
 }
