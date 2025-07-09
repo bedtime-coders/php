@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./static/android-chrome-192x192.png" alt="PHp*" width="192" height="192">
+<img src="./static/extension_icon@128px.png" alt="PHp*" width="128" height="128">
 <h1>PHp*</h1>
 
 [Prisma](https://www.prisma.io/) + [Hono](https://hono.dev/) + [pnpm](https://pnpm.io/) 
