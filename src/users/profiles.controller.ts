@@ -21,7 +21,7 @@ app.openapi(routes.getProfile, async ({ json, get, req }) => {
  */
 authenticatedApp.openapi(routes.followUser, async ({ req, json, get }) => {
 	const username = req.param("username");
-	const { uid: currentUserId } = get("jwtPayload") || {};
+	const { uid: currentUserId } = get("jwtPayload");
 	const result = await service.follow(username, currentUserId);
 	return json(toProfileResponse(result.profile, result.following));
 });
@@ -31,7 +31,7 @@ authenticatedApp.openapi(routes.followUser, async ({ req, json, get }) => {
  */
 authenticatedApp.openapi(routes.unfollowUser, async ({ req, json, get }) => {
 	const username = req.param("username");
-	const { uid: currentUserId } = get("jwtPayload") || {};
+	const { uid: currentUserId } = get("jwtPayload");
 	const result = await service.unfollow(username, currentUserId);
 	return json(toProfileResponse(result.profile, result.following));
 });
