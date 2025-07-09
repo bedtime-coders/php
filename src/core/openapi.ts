@@ -5,6 +5,8 @@ import type { Env } from "hono";
 import { description, repository, title } from "../../package.json";
 import { env } from "./env";
 
+const favicon = "/favicon.ico";
+
 function getRepositoryUrlLabel(url: string) {
 	// match the author and repo name with regex
 	const match = url.match(/github\.com\/([^/]+)\/([^/]+)/);
@@ -41,13 +43,13 @@ export function registerOpenapi<E extends Env>(
 			},
 		],
 	});
-	app.use("/favicon.ico", serveStatic({ path: "./static/favicon.ico" }));
+	app.use(favicon, serveStatic({ path: `./static${favicon}` }));
 	app.get(
 		urls.scalar,
 		Scalar({
 			url: urls.json,
 			pageTitle: title,
-			favicon: "/favicon.ico",
+			favicon,
 		}),
 	);
 	app.get("/", ({ redirect }) => redirect(urls.scalar));
