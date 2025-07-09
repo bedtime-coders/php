@@ -165,14 +165,20 @@ export const getProfile = async (
 	return { profile, following };
 };
 
+const assertNoSelfFollowUnfollow = (
+	profileId: string,
+	currentUserId: string,
+) => {
+	if (profileId === currentUserId) {
+		throw new Error("You cannot follow/unfollow yourself");
+	}
+};
+
 export const follow = async (username: string, currentUserId: string) => {
 	const profile = await db.user.findFirstOrThrow({
 		where: { username },
 	});
-	// TODO: Make this a db constraint
-	if (profile.id === currentUserId)
-		// TODO: Better error
-		throw new Error("You cannot follow yourself");
+	assertNoSelfFollowUnfollow(profile.id, currentUserId);
 	await db.user.update({
 		where: { id: currentUserId },
 		data: { following: { connect: { id: profile.id } } },
@@ -184,10 +190,7 @@ export const unfollow = async (username: string, currentUserId: string) => {
 	const profile = await db.user.findFirstOrThrow({
 		where: { username },
 	});
-	// TODO: Make this a db constraint
-	if (profile.id === currentUserId)
-		// TODO: Better error
-		throw new Error("You cannot unfollow yourself");
+	assertNoSelfFollowUnfollow(profile.id, currentUserId);
 	await db.user.update({
 		where: { id: currentUserId },
 		data: { following: { disconnect: { id: profile.id } } },
