@@ -84,7 +84,7 @@ export const errorHandler = async (err: Error, c: Context) => {
 			status: StatusCodes.UNPROCESSABLE_CONTENT,
 			logInfo: err,
 			response: c.json(
-				err.errors,
+				{ errors: err.errors },
 				StatusCodes.UNPROCESSABLE_CONTENT as ContentfulStatusCode,
 			),
 		}))
@@ -92,7 +92,7 @@ export const errorHandler = async (err: Error, c: Context) => {
 			status: StatusCodes.BAD_REQUEST,
 			logInfo: err,
 			response: c.json(
-				err.errors,
+				{ errors: err.errors },
 				StatusCodes.BAD_REQUEST as ContentfulStatusCode,
 			),
 		}))
