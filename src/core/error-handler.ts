@@ -21,16 +21,26 @@ function parseWwwAuthenticate(header: string) {
 	};
 }
 
+const createErrorResponse = (
+	c: Context,
+	status: number,
+	errOrErrors: Record<string, string[]> | { errors: Record<string, string[]> },
+) => ({
+	status,
+	logInfo: errOrErrors,
+	response: c.json(
+		typeof errOrErrors === "object" && "errors" in errOrErrors
+			? { errors: errOrErrors.errors }
+			: { errors: errOrErrors },
+		status as ContentfulStatusCode,
+	),
+});
+
 export const errorHandler = async (err: Error, c: Context) => {
 	const result = await match(err)
-		.with(P.instanceOf(ApiError), (err) => ({
-			status: err.status,
-			logInfo: err,
-			response: c.json(
-				{ errors: err.errors },
-				err.status as ContentfulStatusCode,
-			),
-		}))
+		.with(P.instanceOf(ApiError), (err) =>
+			createErrorResponse(c, err.status, err.errors),
+		)
 		.with(P.instanceOf(HTTPException), async (err) => {
 			const res = err.getResponse();
 			const resClone = res.clone();
@@ -39,16 +49,7 @@ export const errorHandler = async (err: Error, c: Context) => {
 
 			if (wwwAuth) {
 				const { error, description } = parseWwwAuthenticate(wwwAuth);
-				return {
-					status: res.status,
-					logInfo: { error, description, status: res.status },
-					response: c.json(
-						{
-							errors: { [error]: [description] },
-						},
-						res.status as ContentfulStatusCode,
-					),
-				};
+				return createErrorResponse(c, res.status, { [error]: [description] });
 			}
 
 			if (contentType.includes("application/json")) {
@@ -70,42 +71,20 @@ export const errorHandler = async (err: Error, c: Context) => {
 				),
 			};
 		})
-		.with(P.instanceOf(ConflictingFieldsError), (err) => ({
-			status: StatusCodes.CONFLICT,
-			logInfo: err,
-			response: c.json(
-				{
-					errors: err.errors,
-				},
-				StatusCodes.CONFLICT as ContentfulStatusCode,
-			),
-		}))
-		.with(P.instanceOf(SelfFollowError), (err) => ({
-			status: StatusCodes.UNPROCESSABLE_CONTENT,
-			logInfo: err,
-			response: c.json(
-				{ errors: err.errors },
-				StatusCodes.UNPROCESSABLE_CONTENT as ContentfulStatusCode,
-			),
-		}))
-		.with(P.instanceOf(RealWorldError), (err) => ({
-			status: StatusCodes.BAD_REQUEST,
-			logInfo: err,
-			response: c.json(
-				{ errors: err.errors },
-				StatusCodes.BAD_REQUEST as ContentfulStatusCode,
-			),
-		}))
-		.otherwise(() => ({
-			status: StatusCodes.INTERNAL_SERVER_ERROR,
-			logInfo: err,
-			response: c.json(
-				{
-					errors: { unknown: ["an error occurred"] },
-				},
-				StatusCodes.INTERNAL_SERVER_ERROR as ContentfulStatusCode,
-			),
-		}));
+		.with(P.instanceOf(ConflictingFieldsError), (err) =>
+			createErrorResponse(c, StatusCodes.CONFLICT, err),
+		)
+		.with(P.instanceOf(SelfFollowError), (err) =>
+			createErrorResponse(c, StatusCodes.UNPROCESSABLE_CONTENT, err),
+		)
+		.with(P.instanceOf(RealWorldError), (err) =>
+			createErrorResponse(c, StatusCodes.BAD_REQUEST, err),
+		)
+		.otherwise(() =>
+			createErrorResponse(c, StatusCodes.INTERNAL_SERVER_ERROR, {
+				unknown: ["an error occurred"],
+			}),
+		);
 
 	if (!NORMAL_ERROR_CODES.includes(result.status)) {
 		console.error(result.logInfo);
