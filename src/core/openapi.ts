@@ -51,4 +51,10 @@ export function registerOpenapi<E extends Env>(
 		}),
 	);
 	app.get("/", ({ redirect }) => redirect(urls.scalar));
+	app.openAPIRegistry.registerComponent("securitySchemes", "Token", {
+		type: "apiKey",
+		description: 'Prefix the token with "Token ", e.g. "Token jwt.token.here"',
+		in: "header",
+		name: "Authorization",
+	});
 }
