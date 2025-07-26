@@ -2,7 +2,7 @@
 <img src="./static/logo.png" alt="PHp*" width="128" height="128">
 <h1>PHp*</h1>
 
-[Prisma](https://www.prisma.io/) + [Hono](https://hono.dev/) + [pnpm](https://pnpm.io/) 
+[Prisma](https://www.prisma.io/) + [Hono](https://hono.dev/) + [pnpm](https://pnpm.io/)
 
 [![License](https://custom-icon-badges.demolab.com/github/license/bedtime-coders/phpstack?label=License&color=blue&logo=law&labelColor=0d1117&)](https://github.com/bedtime-coders/phpstack/blob/main/LICENSE)
 [![Prisma](https://img.shields.io/badge/Prisma-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
@@ -13,9 +13,9 @@
 
 </div>
 
-## PHp*: Prisma + Hono + pnpm
+## PHp\*: Prisma + Hono + pnpm
 
-**PHp*** is a collection of bleeding-edge technologies to build modern web applications.
+**PHp\*** is a collection of bleeding-edge technologies to build modern web applications.
 
 Including:
 
@@ -37,19 +37,27 @@ Including:
    cp .env.example .env
    ```
 
-3. Push the database schema to the database
+3. Start the database
+
+   ```bash
+   pnpm db:dev
+   ```
+
+4. Update the .env file with your database URL given by the previous step, and your own JWT secret
+
+5. Push the database schema to the database
 
    ```bash
    pnpm db:push
    ```
 
-4. Start the server
+6. Start the server
 
    ```bash
    pnpm dev
    ```
 
-5. (Optional) Start the [database studio](https://www.prisma.io/studio)
+7. (Optional) Start the [database studio](https://www.prisma.io/studio)
    ```bash
    pnpm db:studio
    ```
@@ -80,4 +88,4 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for more information, including how to 
 
 ---
 
-<sup>*no relation to [PHP](https://www.php.net), the scripting language</sup>
+<sup>\*no relation to [PHP](https://www.php.net), the scripting language</sup>
